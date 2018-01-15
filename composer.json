@@ -1,0 +1,24 @@
+{
+    "name": "sfire/framework",
+    "description": "Secure, fast and lightweight PHP Framework",
+    "type": "library",
+    "keywords": [
+        "framework",
+        "mvc",
+        "sFire"
+    ],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Kris Kuiper",
+            "email": "kris@sfire.nl"
+        }
+    ],
+    "homepage": "https://sfire.nl",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=5.5 || >=7.0"
+    },
+    "extra": {}
+}

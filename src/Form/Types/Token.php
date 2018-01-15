@@ -1,0 +1,62 @@
+<?php
+/**
+ * sFire Framework
+ *
+ * @link      http://github.com/Kris-Kuiper/sFire-Framework
+ * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
+ * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ */
+
+namespace sFire\Form\Types;
+
+use sFire\Validator\Form\Validator;
+use sFire\Form\Form;
+use sFire\Session\Standard as Session;
+use sFire\Hash\Token as TokenHash;
+use sFire\Application\Application;
+
+class Token {
+
+    const TOKEN_AMOUNT = 25;
+
+
+    /**
+     * Generates 
+     * @return string
+     */
+    public function __toString() {
+
+        $token = $this -> generate();
+        $form  = new Form();
+
+        return $form -> hidden('_token-name', $token -> name) -> filled(false) . $form -> hidden('_token-value', $token -> value) -> filled(false);
+    }
+
+
+    /**
+     * Generates a new token and saves it into the session
+     * @return object
+     */
+    public function generate() {
+        
+        $session = new Session();
+
+        if(false === $session -> has('_token')) {
+            $session -> add('_token', []);
+        }
+
+        $name  = TokenHash :: create(20, true, true, true);
+        $value = TokenHash :: create(40, true, true, true);
+
+        $session -> add('_token', [$name => $value]);
+        $amount = count($session -> get('_token'));
+        $limit  = Application :: get(['token', 'amount'], self :: TOKEN_AMOUNT);
+
+        if($amount >= $limit) {
+            $session -> add('_token', array_slice($session -> pull('_token'), $amount - $limit, null, true));
+        }
+
+        return (object) ['name' => $name, 'value' => $value];
+    }
+}
+?>
