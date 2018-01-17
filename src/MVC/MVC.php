@@ -13,6 +13,7 @@ use sFire\Config\Config;
 use sFire\Entity\Method;
 use sFire\Template\Template;
 use sFire\Config\Path;
+use sFire\Config\Files;
 use sFire\Application\Application;
 
 #MVC
@@ -117,6 +118,9 @@ final class MVC {
 			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($matches)), E_USER_ERROR);
 		}
 
+		//Load the module dispatch file if exists and readable
+		$this -> loadBoot($method -> getModule());
+
 		//Execute start method if controller supports it
 		if(true === is_callable([$controller, '__start'])) {
 			call_user_func_array([$controller, '__start'], []);
@@ -135,6 +139,25 @@ final class MVC {
 		//Execute end method if controller supports it
 		if(true === is_callable([$controller, '__end'])) {
 			call_user_func_array([$controller, '__end'], []);
+		}
+	}
+
+
+
+	/**
+	 * Load the module boot file if exists and readable
+	 * @param string $module
+	 */
+	private function loadBoot($module) {
+
+		if(false === is_string($module)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($module)), E_USER_ERROR);
+		}
+		
+		$boot = Path :: get('modules') . $module . DIRECTORY_SEPARATOR . Files :: get('boot');
+
+		if(true === is_readable($boot)) {
+			require_once($boot);
 		}
 	}
 }

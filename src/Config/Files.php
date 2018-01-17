@@ -27,6 +27,7 @@ final class Files extends Container {
 	public function __construct() {
 
 		static :: add('routes', Path :: get('config') . 'routes.php');
+		static :: add('boot', 'config' . DIRECTORY_SEPARATOR . 'boot.php');
 		static :: add('module-config', 'config' . DIRECTORY_SEPARATOR . 'config.php');
 	}
 }

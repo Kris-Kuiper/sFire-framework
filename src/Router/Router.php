@@ -397,7 +397,7 @@ final class Router {
 		if(false === isset(static :: $methods[$identifier])) {
 			return false;
 		}
-			
+
 		if(null !== $domain) {
 			return static :: domainExists($domain);
 		}
@@ -423,7 +423,7 @@ final class Router {
 
 			foreach($domains as $url) {
 
-				if(preg_match('#'. str_replace('#', '\#', $url) .'#', $domain)) {
+				if(preg_match('#'. str_replace('#', '\#', $url) .'#', $domain) || $url === $domain) {
 					return true;
 				}
 			}
@@ -641,7 +641,7 @@ final class Router {
 			$method = static :: getRouteMethod('404');
 			$method -> setViewable(true);
 
-			static :: redirect('404', null, null, $domain);
+			static :: redirect('404', null, null, $domain) -> get();
 
 			return true;
 		}
