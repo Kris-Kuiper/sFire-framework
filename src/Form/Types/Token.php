@@ -11,7 +11,7 @@ namespace sFire\Form\Types;
 
 use sFire\Validator\Form\Validator;
 use sFire\Form\Form;
-use sFire\Session\Standard as Session;
+use sFire\Session\Driver\Plain as Session;
 use sFire\Hash\Token as TokenHash;
 use sFire\Application\Application;
 

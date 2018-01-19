@@ -15,7 +15,7 @@ use sFire\Validator\Form\Message;
 use sFire\Validator\Form\Combine;
 use sFire\Hash\Token;
 use sFire\Translation\Translation;
-use sFire\Session\Standard as Session;
+use sFire\Session\Driver\Plain as Session;
 use sFire\Validator\Validator as MainValidator;
 use sFire\Application\Application;
 

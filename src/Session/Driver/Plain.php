@@ -11,7 +11,7 @@ namespace sFire\Session\Driver;
 
 use sFire\Session\AbstractSession;
 
-class Standard extends AbstractSession {
+class Plain extends AbstractSession {
 
 	/**
      * @var array $data
