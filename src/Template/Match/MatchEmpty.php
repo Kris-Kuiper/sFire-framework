@@ -18,7 +18,7 @@ use sFire\Template\Match\MatchRouter;
 use sFire\Template\TemplateData;
 use sFire\Template\Template;
 
-class MatchIsset {
+class MatchEmpty {
 
 	use MatchTrait;
 

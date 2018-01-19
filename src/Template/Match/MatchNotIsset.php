@@ -18,7 +18,7 @@ use sFire\Template\Match\MatchRouter;
 use sFire\Template\TemplateData;
 use sFire\Template\Template;
 
-class MatchIsset {
+class MatchNotIsset {
 
 	use MatchTrait;
 
@@ -31,7 +31,7 @@ class MatchIsset {
 
 		$this -> setLine($line);
 
-		if(preg_match_all('#@isset(\((((?>[^()]+)|(?1))*)\))#is', $this -> line, $matches)) {
+		if(preg_match_all('#@notisset(\((((?>[^()]+)|(?1))*)\))#is', $this -> line, $matches)) {
 			$this -> setMatch($matches);
 		}
 	}
@@ -73,7 +73,7 @@ class MatchIsset {
 				$match 	= new MatchVariable($output);
 				$output = $match -> replace() -> getLine();
 
-				$code = '<?php if(isset('. ltrim($output, '@') .')): ?>';
+				$code = '<?php if(!isset('. ltrim($output, '@') .')): ?>';
 				$this -> line = preg_replace('/' . preg_quote($this -> match[0][$index], '/') . '/', $code, $this -> line , 1);
 			}
 		}
