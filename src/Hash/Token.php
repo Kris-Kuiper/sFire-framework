@@ -49,8 +49,8 @@ final class Token {
 
 		for($i = 0; $i < count($types); $i++) {
 
-			if(null !== $$types[$i] && false === is_bool($$types[$i])) {
-				return trigger_error(sprintf('Argument %s passed to %s() must be of the type boolean, "%s" given', ($i + 2), __METHOD__, gettype($$types[$i])), E_USER_ERROR);
+			if(null !== ${$types[$i]} && false === is_bool(${$types[$i]})) {
+				return trigger_error(sprintf('Argument %s passed to %s() must be of the type boolean, "%s" given', ($i + 2), __METHOD__, gettype(${$types[$i]})), E_USER_ERROR);
 			}
 		}
 

@@ -567,13 +567,13 @@ class Database implements InterfaceDB {
 			while($field = $meta -> fetch_field()) {
 
 				$columnname  = $field -> name;
-				$$columnname = null;
+				${$columnname} = null;
 				
 				if(true === array_key_exists($columnname, $vars)) {
 					$double[] = $columnname;
 				}
 				else {
-					$vars[$columnname] = &$$columnname;
+					$vars[$columnname] = &${$columnname};
 				}
 			}
 		}

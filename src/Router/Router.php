@@ -585,7 +585,7 @@ final class Router {
 
 				foreach($domains as $domain) {
 
-					if(preg_match('#'. str_replace('#', '\#', $domain) .'#', Request :: parseUrl('host'))) {
+					if(1 === preg_match('#'. str_replace('#', '\#', $domain) .'#', Request :: parseUrl('host'))) {
 						
 						$found  = true;
 						$domain = $domain;

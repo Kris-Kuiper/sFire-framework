@@ -27,9 +27,9 @@ class AbstractSession extends Container {
 	 */
 	public function __construct() {
 
-		session_save_path(Path :: get('session'));
-
 		if(false === isset($_SESSION)) {
+
+			session_save_path(Path :: get('session'));
 			
 			$session_id = '';
 

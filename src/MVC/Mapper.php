@@ -18,9 +18,9 @@ class Mapper extends Main {
 
 
 	/**
-	 * @var string $table
+	 * @var string $dbtable
 	 */
-	private $table = null;
+	private $dbtable = null;
 
 
 	/**
@@ -31,26 +31,26 @@ class Mapper extends Main {
 
 	/**
 	 * Loads and stores a new DBTable and returns it
-	 * @param string $table
+	 * @param string $dbtable
 	 * @return mixed
 	 */
-	public function dbtable($table = null) {
+	public function dbtable($dbtable = null) {
 
-		if(true === isset($this -> table) && null === $table) {
-			$table = $this -> table;
+		if(true === isset($this -> dbtable) && null === $dbtable) {
+			$dbtable = $this -> dbtable;
 		}
 		
-		if($table !== null && false === is_string($table)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($table)), E_USER_ERROR);
+		if($dbtable !== null && false === is_string($dbtable)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($dbtable)), E_USER_ERROR);
 		}
 
-		if($table === null) {
+		if($dbtable === null) {
 			return trigger_error('Table name can not be empty. Set the table name with the "setTable" method in the mapper', E_USER_ERROR);
 		}
 
-		if(false === isset($this -> dbtables[$table])) {
+		if(false === isset($this -> dbtables[$dbtable])) {
 
-			$class 		= Application :: get(['prefix', 'dbtable']) . NameConvert :: toCamelCase($table, true);
+			$class 		= Application :: get(['prefix', 'dbtable']) . NameConvert :: toCamelCase($dbtable, true);
 			$path 		= Router :: getCurrentRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'dbtable']);
 			$namespace 	= str_replace(DIRECTORY_SEPARATOR, '\\', $path . $class);
 
@@ -58,10 +58,10 @@ class Mapper extends Main {
 				return trigger_error(sprintf('"%s" class does not exists in "%s"', $class, $path), E_USER_ERROR);
 			}
 			
-			$this -> dbtables[$table] = new $namespace;
+			$this -> dbtables[$dbtable] = new $namespace;
 
 			//Set the tablename if class isn't already populated with the table property
-			$cl = new \ReflectionClass($this -> dbtables[$table]);
+			$cl = new \ReflectionClass($this -> dbtables[$dbtable]);
 			
 			foreach($cl -> getProperties() as $prop) {
 
@@ -70,25 +70,25 @@ class Mapper extends Main {
 				}
 			}
 
-			call_user_func_array([$this -> dbtables[$table], 'setTable'], [$table]);
+			call_user_func_array([$this -> dbtables[$dbtable], 'setTable'], [$dbtable]);
 		}
 
 		output:
-		return $this -> dbtables[$table];
+		return $this -> dbtables[$dbtable];
 	}
 
 
 	/**
-	 * Set the table
-	 * @param string $table
+	 * Set the dbtable
+	 * @param string $dbtable
 	 */
-	protected function setTable($table) {
+	protected function setDBTable($dbtable) {
 
-		if(false === is_string($table)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($table)), E_USER_ERROR);
+		if(false === is_string($dbtable)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($dbtable)), E_USER_ERROR);
 		}
 
-		$this -> table = $table;
+		$this -> dbtable = $dbtable;
 	}
 
 
@@ -96,8 +96,8 @@ class Mapper extends Main {
 	 * Returns the table
 	 * @return null | string
 	 */
-	protected function getTable() {
-		return $this -> table;
+	protected function getDBTable() {
+		return $this -> dbtable;
 	}
 }
 ?>
