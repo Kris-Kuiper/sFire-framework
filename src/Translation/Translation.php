@@ -2,16 +2,16 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
+ * @link      https://sfire.nl
  * @copyright Copyright (c) 2014-2018 sFire Framework. (http://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
 
 namespace sFire\Translation;
 
 use sFire\Config\Path;
 use sFire\System\File;
-use sFire\Router\Router;
+use sFire\Routing\Router;
 use sFire\MVC\Viewmodel;
 use sFire\Application\Application;
 
@@ -109,7 +109,7 @@ class Translation {
 
 		if($source instanceof Viewmodel) {
 
-			$path 			= Path :: get('modules') . Router :: getCurrentRoute() -> getModule() . DIRECTORY_SEPARATOR;
+			$path 			= Path :: get('modules') . Router :: getRoute() -> getModule() . DIRECTORY_SEPARATOR;
 			$views 			= $path . Application :: get(['directory', 'view']);
 			$translations 	= $path . Application :: get(['directory', 'translation']);
 			$extension 		= Application :: get(['extensions', 'view']);
@@ -117,7 +117,7 @@ class Translation {
 			$file  			= preg_replace('#'. preg_quote($extension) .'$#', '', $file);
 		}
 
-		$module 	= Router :: getCurrentRoute() -> getModule();
+		$module 	= Router :: getRoute() -> getModule();
 		$extension 	= Application :: get(['extensions', 'translation']);
 		$file 		= str_replace('.', DIRECTORY_SEPARATOR, $file);
 		$file 		= Path :: get('modules') . $module . DIRECTORY_SEPARATOR . Application :: get(['directory', 'translation']) . $file . $extension;

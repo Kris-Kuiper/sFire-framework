@@ -2,14 +2,14 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
 
 namespace sFire\Validator;
 
-use sFire\Router\Router;
+use sFire\Routing\Router;
 use sFire\Validator\Message;
 use sFire\Validator\Store;
 use sFire\Application\Application;
@@ -187,7 +187,7 @@ trait Validator {
 
 		$directories 	= explode('.', $classname); //Convert dots to directory seperators
 		$amount 		= count($directories) - 1;
-		$namespace 		= Router :: getCurrentRoute() -> getModule() . '\\' . str_replace(DIRECTORY_SEPARATOR, '\\', Application :: get(['directory', 'validator']));
+		$namespace 		= Router :: getRoute() -> getModule() . '\\' . str_replace(DIRECTORY_SEPARATOR, '\\', Application :: get(['directory', 'validator']));
 
 		foreach($directories as $index => $directory) {
 

@@ -2,9 +2,9 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
+ * @link      https://sfire.nl
  * @copyright Copyright (c) 2014-2018 sFire Framework. (http://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
 
 namespace sFire\MVC;

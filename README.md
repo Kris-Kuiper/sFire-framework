@@ -1,10 +1,13 @@
 ![Logo](https://github.com/Kris-Kuiper/sFire-Framework/raw/master/sfire-logo.png)
 
-# Welcome to the *sFire Framework 3.0* Release!
+# Welcome to the *sFire Framework 3.* Release!
 
 ### System Requirements
-sFire Framework requires PHP 5.5 or later; we recommend using the
-latest PHP version whenever possible.
+sFire Framework requires PHP 5.5.*, 5.6.*, 7.0.*, 7.1.*, 7.2.* or later; we recommend using the latest PHP version whenever possible.
+
+
+### Current version
+The current version is 3.0.5 of the sFire Framework.
 
 
 ### Installation

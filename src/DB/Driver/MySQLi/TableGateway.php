@@ -2,17 +2,17 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
  
 namespace sFire\DB\Driver\MySQLi;
 
 use sFire\MVC\Main;
-use sFire\Router\Router;
+use sFire\Routing\Router;
 use sFire\DB\ResultSet;
-use sFire\Helpers\NameConvert;
+use sFire\Utils\NameConvert;
 use sFire\Application\Application;
 
 class TableGateway extends Main {
@@ -398,7 +398,7 @@ class TableGateway extends Main {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($table)), E_USER_ERROR);
 		}
 
-		$path = Router :: getCurrentRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'entity']) . Application :: get(['prefix', 'entity']) . NameConvert :: toCamelCase($table, true);
+		$path = Router :: getRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'entity']) . Application :: get(['prefix', 'entity']) . NameConvert :: toCamelCase($table, true);
 		$path = str_replace(DIRECTORY_SEPARATOR, '\\', $path);
 
 		return $path;

@@ -2,9 +2,9 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
  
 namespace sFire\Cookie;
@@ -42,13 +42,13 @@ final class Cookie extends Container {
 	 * @param boolean $secure
 	 * @param boolean $httponly
 	 */
-	public static function add($key, $value, $seconds = 0, $encrypt = false, $path = null, $domain = null, $secure = null, $httponly = null) {
+	public static function add($key, $value = null, $seconds = 0, $encrypt = false, $path = null, $domain = null, $secure = null, $httponly = null) {
 
 		if(false === is_string($key)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($key)), E_USER_ERROR);
 		}
 
-		if(false === is_string($value)) {
+		if(null !== $value && false === is_string($value)) {
 			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($value)), E_USER_ERROR);
 		}
 

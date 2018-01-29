@@ -2,14 +2,14 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
 
 namespace sFire\MVC;
 
-use sFire\Router\Router;
+use sFire\Routing\Router;
 use sFire\Config\Config;
 use sFire\Application\Application;
 
@@ -62,7 +62,7 @@ class Service {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($data)), E_USER_ERROR);
 		}
 
-		$module = Router :: getCurrentRoute() -> getModule();
+		$module = Router :: getRoute() -> getModule();
 		
 		return Config :: get(array_merge([$module], $data));
 	}

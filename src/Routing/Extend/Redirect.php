@@ -2,14 +2,14 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   https://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   https://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
  
-namespace sFire\Router;
+namespace sFire\Routing\Extend;
 
-use sFire\Router\Router;
+use sFire\Routing\Router;
 use sFire\HTTP\Request;
 
 class Redirect {
@@ -55,7 +55,7 @@ class Redirect {
 	/**
 	 * Set the parameters
 	 * @param array $param
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function params($params) {
 
@@ -72,7 +72,7 @@ class Redirect {
 	/**
 	 * Set the domain
 	 * @param string $domain
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function domain($domain) {
 
@@ -93,7 +93,7 @@ class Redirect {
 
 	/**
 	 * Simulate GET method
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function get() {
 		return $this -> redirect('get');
@@ -102,7 +102,7 @@ class Redirect {
 
 	/**
 	 * Simulate POST method
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function post() {
 		return $this -> redirect('post');
@@ -111,7 +111,7 @@ class Redirect {
 
 	/**
 	 * Simulate PUT method
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function put() {
 		return $this -> redirect('put');
@@ -120,7 +120,7 @@ class Redirect {
 
 	/**
 	 * Simulate DELETE method
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function delete() {
 		return $this -> redirect('delete');
@@ -129,7 +129,7 @@ class Redirect {
 
 	/**
 	 * Simulate OPTIONS method
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function options() {
 		return $this -> redirect('options');
@@ -138,7 +138,7 @@ class Redirect {
 
 	/**
 	 * Simulate PATCH method
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function patch() {
 		return $this -> redirect('patch');
@@ -147,7 +147,7 @@ class Redirect {
 
 	/**
 	 * Simulate CONNECT method
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function connect() {
 		return $this -> redirect('connect');
@@ -156,7 +156,7 @@ class Redirect {
 
 	/**
 	 * Simulate TRACE method
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function trace() {
 		return $this -> redirect('trace');
@@ -165,7 +165,7 @@ class Redirect {
 
 	/**
 	 * Simulate HEAD method
-	 * @return sFire\Router\Redirect
+	 * @return sFire\Routing\Redirect
 	 */
 	public function head() {
 		return $this -> redirect('head');

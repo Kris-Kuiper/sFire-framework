@@ -2,14 +2,14 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   https://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   https://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
  
-namespace sFire\Router;
+namespace sFire\Routing\Extend;
 
-use sFire\Router\Router;
+use sFire\Routing\Router;
 use sFire\HTTP\Response;
 use sFire\HTTP\Request;
 use sFire\Utils\URLParser;
@@ -132,7 +132,8 @@ class Forward {
 	
 
 	/**
-	 * Execute forward
+	 * Execute forward, with options HTTP status code
+	 * @param integer $code
 	 */
 	public function execute($code = null) {
 

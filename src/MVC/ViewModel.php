@@ -2,15 +2,15 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
+ * @link      https://sfire.nl
  * @copyright Copyright (c) 2014-2018 sFire Framework. (http://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
 
 namespace sFire\MVC;
 
 use sFire\Config\Path;
-use sFire\Router\Router;
+use sFire\Routing\Router;
 use sFire\MVC\ViewContainer;
 use sFire\MVC\View;
 use sFire\HTTP\Response;
@@ -66,7 +66,7 @@ class ViewModel {
 			return trigger_error(sprintf('Argument 4 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($charset)), E_USER_ERROR);
 		}
 		
-		$path 	   = Path :: get('modules') . Router :: getCurrentRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'view']);
+		$path 	   = Path :: get('modules') . Router :: getRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'view']);
 		$viewfile  = str_replace('.', DIRECTORY_SEPARATOR, $file) . Application :: get(['extensions', 'view']);
 		$file 	   = $path . $viewfile;
 		

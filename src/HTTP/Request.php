@@ -2,14 +2,14 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
  
 namespace sFire\HTTP;
 
-use sFire\Helpers\StringToArray;
+use sFire\Utils\StringToArray;
 
 final class Request {
 
@@ -741,8 +741,8 @@ final class Request {
 			return $array2; 
 		}
 
-		foreach($array2 as $sKey2 => $sValue2) {
-			$array1[$sKey2] = static :: arrayRecursiveMerge(@$array1[$sKey2], $sValue2);
+		foreach($array2 as $key => $value) {
+			$array1[$key] = static :: arrayRecursiveMerge(@$array1[$key], $value);
 		}
 
 		return $array1;

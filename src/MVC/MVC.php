@@ -2,15 +2,15 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
  
 namespace sFire\MVC;
 
 use sFire\Config\Config;
-use sFire\Entity\Method;
+use sFire\Routing\Extend\Route;
 use sFire\Template\Template;
 use sFire\Config\Path;
 use sFire\Config\Files;
@@ -22,10 +22,10 @@ final class MVC {
 
 	/**
 	 * Constructor
-	 * @param Method $method
+	 * @param Route $route
 	 * @param array $matches
 	 */
-	public function __construct(Method $method, $matches = []) {
+	public function __construct(Route $route, $matches = []) {
 
 		//Validate if the params is an array
 		if(false === is_array($matches)) {
@@ -33,33 +33,33 @@ final class MVC {
 		}
 
 		//Validates if the current method has a module set
-		if(null === $method -> getModule()) {
-			return trigger_error(sprintf('Route with identifier "%s" must contain a valid module name, set with setModule() method in routes.php', $method -> getIdentifier()), E_USER_ERROR);
+		if(null === $route -> getModule()) {
+			return trigger_error(sprintf('Route with identifier "%s" must contain a valid module name, set with module() method in routes.php', $route -> getIdentifier()), E_USER_ERROR);
 		}
 
 		//Validates if the current method has a controller set
-		if(null === $method -> getController()) {
-			return trigger_error(sprintf('Route with identifier "%s" must contain a valid controller, set with setController() method in routes.php', $method -> getIdentifier()), E_USER_ERROR);
+		if(null === $route -> getController()) {
+			return trigger_error(sprintf('Route with identifier "%s" must contain a valid controller, set with controller() method in routes.php', $route -> getIdentifier()), E_USER_ERROR);
 		}
 
 		//Validates if the current method has a action set
-		if(null === $method -> getAction()) {
-			return trigger_error(sprintf('Route with identifier "%s" must contain a valid action method, set with setAction() method in routes.php', $method -> getIdentifier()), E_USER_ERROR);
+		if(null === $route -> getAction()) {
+			return trigger_error(sprintf('Route with identifier "%s" must contain a valid action method, set with action() method in routes.php', $route -> getIdentifier()), E_USER_ERROR);
 		}
 
-		if('' === $method -> getModule()) {
-			$method -> setModule(key(Config :: all()));
+		if('' === $route -> getModule()) {
+			$route -> setModule(key(Config :: all()));
 		}
 
-		$namespace = $this -> loadController($method -> getModule(), $method -> getController());
+		$namespace = $this -> loadController($route -> getModule(), $route -> getController());
 
 		if(true === class_exists($namespace)) {
 			
 			$controller = new $namespace;
-			return $this -> executeController($controller, $method, $matches);
+			return $this -> executeController($controller, $route, $matches);
 		}
 
-		trigger_error(sprintf('Controller "%s" with module "%s" does not exists for "%s" as identifier in routes.php', $method -> getController(), $method -> getModule(), $method -> getIdentifier()), E_USER_ERROR);
+		trigger_error(sprintf('Controller "%s" with module "%s" does not exists for "%s" as identifier in routes.php', $route -> getController(), $route -> getModule(), $route -> getIdentifier()), E_USER_ERROR);
 	}
 
 
@@ -105,10 +105,10 @@ final class MVC {
 	/**
 	 * Executes default controller functions
 	 * @param object $controller
-	 * @param sFire\Entity\Method $method
+	 * @param sFire\Routing\Extend\Route $method
 	 * @param array $matches
 	 */
-	private function executeController($controller, Method $method, $matches) {
+	private function executeController($controller, Route $method, $matches) {
 
 		if(false === is_object($controller)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type object, "%s" given', __METHOD__, gettype($controller)), E_USER_ERROR);

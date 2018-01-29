@@ -2,16 +2,16 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
  
 namespace sFire\MVC;
 
 use sFire\MVC\Main;
-use sFire\Router\Router;
-use sFire\Helpers\NameConvert;
+use sFire\Routing\Router;
+use sFire\Utils\NameConvert;
 use sFire\Application\Application;
 
 class Mapper extends Main {
@@ -51,7 +51,7 @@ class Mapper extends Main {
 		if(false === isset($this -> dbtables[$dbtable])) {
 
 			$class 		= Application :: get(['prefix', 'dbtable']) . NameConvert :: toCamelCase($dbtable, true);
-			$path 		= Router :: getCurrentRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'dbtable']);
+			$path 		= Router :: getRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'dbtable']);
 			$namespace 	= str_replace(DIRECTORY_SEPARATOR, '\\', $path . $class);
 
 			if(false === class_exists($namespace)) {

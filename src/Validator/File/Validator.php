@@ -2,15 +2,14 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
 
 namespace sFire\Validator\File;
 
-use sFire\Helpers\StringToArray;
-use sFire\Router\Router;
+use sFire\Utils\StringToArray;
 use sFire\HTTP\Request;
 use sFire\Validator\File\Message;
 use sFire\Translation\Translation;

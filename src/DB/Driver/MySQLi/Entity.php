@@ -2,15 +2,15 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
  
 namespace sFire\DB\Driver\MySQLi;
 
-use sFire\Router\Router;
-use sFire\Helpers\NameConvert;
+use sFire\Routing\Router;
+use sFire\Utils\NameConvert;
 use sFire\DateTime\DateTime;
 use sFire\Application\Application;
 
@@ -123,7 +123,7 @@ class Entity {
 		if(null === $this -> table) {
 
 			$class = new \ReflectionClass(get_class($this));
-			$path  = Router :: getCurrentRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'entity']) . Application :: get(['prefix', 'entity']);
+			$path  = Router :: getRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'entity']) . Application :: get(['prefix', 'entity']);
 			$path  = str_replace(DIRECTORY_SEPARATOR, '\\', $path);
 			
 			$this -> table = NameConvert :: toSnakecase(str_replace($path, '', $class -> name));

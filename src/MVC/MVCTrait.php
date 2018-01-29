@@ -2,15 +2,15 @@
 /**
  * sFire Framework
  *
- * @link      http://github.com/Kris-Kuiper/sFire-Framework
- * @copyright Copyright (c) 2014-2018 sFire Framework. (https://www.sfire.nl)
- * @license   http://sfire.nl/license GNU AFFERO GENERAL PUBLIC LICENSE
+ * @link      https://sfire.nl
+ * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
 
 namespace sFire\MVC;
 
-use sFire\Router\Router;
-use sFire\Helpers\StringToArray;
+use sFire\Routing\Router;
+use sFire\Utils\StringToArray;
 use sFire\Validator\Form\Message;
 use sFire\HTTP\Request;
 use sFire\Application\Application;
@@ -27,7 +27,7 @@ trait MVCTrait {
 
 		$directories 	= explode('.', $classname); //Convert dots to directory seperators
 		$amount 		= count($directories) - 1;
-		$namespace 		= Router :: getCurrentRoute() -> getModule() . '\\' . str_replace(DIRECTORY_SEPARATOR, '\\', Application :: get(['directory', 'helper']));
+		$namespace 		= Router :: getRoute() -> getModule() . '\\' . str_replace(DIRECTORY_SEPARATOR, '\\', Application :: get(['directory', 'helper']));
 
 		foreach($directories as $index => $directory) {
 
