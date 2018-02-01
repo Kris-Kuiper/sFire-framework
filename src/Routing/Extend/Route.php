@@ -155,23 +155,6 @@ final class Route {
 		return $this -> getAttr('match');
 	}
 
-
-	/**
-     * Sets viewable
-     * @param boolean $viewable
-     * @return sFire\Routing\Extend\Route
-     */
-	public function setViewable($viewable) {
-		
-		if(false === is_bool($viewable)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type bool, "%s" given', __METHOD__, gettype($viewable)), E_USER_ERROR);
-		}
-
-		$this -> attr['viewable'] = $viewable;
-
-		return $this;
-	}
-
 	
 	/**
 	 * Returns if router is viewable
@@ -240,7 +223,7 @@ final class Route {
 
 		return $this;
 	}
-	
+
 
 	/**
 	 * Set the controller
@@ -281,18 +264,32 @@ final class Route {
 	
 
 	/**
-	 * Set the prefix
-	 * @param string $prefix
+	 * Set or prepend the prefix
+	 * @param string|null $url
+	 * @param boolean $prepend
 	 * @return sFire\Routing\Extend\Route
 	 */
-	public function prefix($prefix) {
+	public function prefix($url = null, $prepend = true) {
 
-		if(false === is_string($prefix)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($prefix)), E_USER_ERROR);
+		if(null !== $url && false === is_string($url)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($url)), E_USER_ERROR);
 		}
 
-		$this -> attr['prefix'] = $prefix;
+		if(false === is_bool($prepend)) {
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($prepend)), E_USER_ERROR);
+		}
 
+		$prefix = $this -> getAttr('prefix');
+
+		if(null !== $prefix) {
+
+			if(true === $prefix['prepend'] && true === $prepend) {
+				$url = $prefix['url'] . $url;
+			}
+		}
+
+		$this -> attr['prefix'] = ['url' => $url, 'prepend' => $prepend];
+		
 		return $this;
 	}
 	
@@ -410,6 +407,41 @@ final class Route {
 
 
 	/**
+	 * Set a new error route
+	 * @param integer $type
+	 * @param string $identifier
+	 * @return sFire\Routing\Extend\Route
+	 */
+	public function error($type, $identifier, $default = false) {
+
+		if(false === ('-' . intval($type) == '-' . $type)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($type)), E_USER_ERROR);
+		}
+
+		if(false === is_string($identifier)) {
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($identifier)), E_USER_ERROR);
+		}
+
+		if(false === is_bool($default)) {
+			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($default)), E_USER_ERROR);
+		}
+
+		$this -> attr['method'] 	= 'any';
+		$this -> attr['url'] 		= $identifier;
+		$this -> attr['identifier'] = $identifier;
+		$this -> attr['viewable'] 	= false;
+
+		$route = new Route();
+		$route -> setAttr(array_merge(Router :: getGroup(), $this -> attr));
+
+		Router :: addRoute($route);
+		Router :: addErrorRoute($type, $route, $default);
+
+		return $route;
+	}
+
+
+	/**
      * Returns the module
      * @return null|string
      */
@@ -491,11 +523,11 @@ final class Route {
 	
 
 	/**
-     * Returns the type
+     * Returns the method
      * @return null|string
      */
-	public function getType() {
-		return $this -> getAttr('type');
+	public function getMethod() {
+		return $this -> getAttr('method');
 	}
 	
 
@@ -557,15 +589,15 @@ final class Route {
 
 	/**
 	 * Sets a new route method
-	 * @param string $type
+	 * @param string $method
 	 * @param string $url
 	 * @param string $identifier
 	 * @return sFire\Routing\Extend\Route
 	 */
-	private function method($type, $url, $identifier) {
+	private function method($method, $url, $identifier) {
 
-		if(false === is_string($type)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($type)), E_USER_ERROR);
+		if(false === is_string($method)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the method string, "%s" given', __METHOD__, gettype($method)), E_USER_ERROR);
 		}
 
 		if(false === is_string($url)) {
@@ -580,10 +612,10 @@ final class Route {
 			return trigger_error(sprintf('Route with identifier "%s" already exists', $identifier), E_USER_ERROR);
 		}
 
-		$this -> attr['type'] 		= $type;
+		$this -> attr['method'] 	= $method;
 		$this -> attr['url'] 		= $url;
 		$this -> attr['identifier'] = $identifier;
-
+		
 		$route = new Route();
 		$route -> setAttr(array_merge(Router :: getGroup(), $this -> attr));
 

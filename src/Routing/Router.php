@@ -36,7 +36,7 @@ final class Router {
 	/**
 	 * @var array $routes
 	 */
-	public static $routes;
+	private static $routes;
 
 
 	/**
@@ -49,6 +49,27 @@ final class Router {
 	 * @var array $group
 	 */
 	private static $group = [];
+
+
+	/**
+	 * @var array $error
+	 */
+	private static $error = [
+
+		'default' => [
+
+			401 => null,
+			403 => null, 
+			404 => null
+		],
+
+		'types' =>[
+
+			401 => [],
+			403 => [], 
+			404 => [] 
+		]
+	];
 
 
 	/**
@@ -94,7 +115,7 @@ final class Router {
 			return trigger_error(sprintf('Call to undefined method %s::%s', __CLASS__, $method), E_USER_ERROR);
     	}
 
-    	call_user_func_array([$route, $method], $arguments);
+    	$route = call_user_func_array([$route, $method], $arguments);
 
     	return $route;
     }
@@ -395,6 +416,59 @@ final class Router {
 
 
 	/**
+	 * Retrieve a route from the error route stack. Default the first on the stack, or route with optional index
+	 * @param string|integer $type
+	 * @param integer $index
+	 * @return null|sFire\Routing\Extend\Route
+	 */
+	public static function getErrorRoute($type, $index = 0) {
+
+		if(false === ('-' . intval($type) == '-' . $type)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($type)), E_USER_ERROR);
+		}
+
+		if(false === ('-' . intval($index) == '-' . $index)) {
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($index)), E_USER_ERROR);
+		}
+
+		if(true === isset(static :: $error['types'][$type][$index])) {
+			return static :: $error['types'][$type][$index];
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Adds a new error route to the error routes stack
+	 * @param integer $type
+	 * @param sFire\Routing\Extend\Route $route
+	 * @param boolean $default
+	 */
+	public static function addErrorRoute($type, Route $route, $default = false) {
+
+		if(false === ('-' . intval($type) == '-' . $type)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($type)), E_USER_ERROR);
+		}
+
+		static :: $error['types'][$type][] = $route;
+
+		if(true === $default || false === isset(static :: $error['default'][$type])) {
+			static :: $error['default'][$type] = $route;
+		}
+	}
+
+
+	/**
+	 * Retrieve all error routes
+	 * @return array
+	 */
+	public static function getErrorRoutes() {
+		return static :: $error['types'];
+	}
+
+
+	/**
 	 * Recursive merge arrays
 	 * @param array $array1
 	 * @param array $array2
@@ -451,8 +525,12 @@ final class Router {
 
 		foreach($routes as $identifier => $route) {
 
+			$url = preg_quote($route -> getUrl(), '/'); 
+
 			//Prepend prefix for url
-			$url = $route -> getPrefix() . preg_quote($route -> getUrl(), '/'); 
+			if($prefix = $route -> getPrefix()) {
+				$url = $prefix['url'] . $url;
+			}
 
 			if(preg_match_all('#(\\\/)*\\\{([a-zA-Z0-9_.]+)(\\\\\?)?\\\}#i', $url, $matches)) {
 				
@@ -516,6 +594,7 @@ final class Router {
 	private static function work() {
 
 		$domain = null;
+		$found  = false;
 
 		if($request = static :: getUrl()) {
 
@@ -532,12 +611,12 @@ final class Router {
 
 				if(true === is_array($domains)) {
 
-					foreach($domains as $domain) {
+					foreach($domains as $host) {
 
-						if(1 === preg_match('#'. str_replace('#', '\#', $domain) .'#', Request :: parseUrl('host'))) {
+						if(1 === preg_match('#'. str_replace('#', '\#', $host) .'#', Request :: parseUrl('host'))) {
 							
 							$found  = true;
-							$domain = $domain;
+							$domains = $host;
 
 							break;
 						}
@@ -546,7 +625,7 @@ final class Router {
 
 				if(true === $found) {
 
-					if(Request :: getMethod() !== null && Request :: getMethod() !== $route -> getType() && $route -> getType() !== 'any') {
+					if(Request :: getMethod() !== null && Request :: getMethod() !== $route -> getMethod() && $route -> getMethod() !== 'any') {
 						continue;
 					}
 
@@ -585,14 +664,18 @@ final class Router {
 		}
 
 		//Trigger 404 if route exists
-		if(true === static :: routeExists('404', $domain)) {
+		if(true === $found && $route = static :: $error['default'][404]) {
 
-			$route = static :: getRoute('404');
-			$route -> setViewable(true);
+			$route -> viewable(true);
 
-			static :: redirect('404', null, null, $domain) -> get();
+			$redirect = static :: redirect($route -> getIdentifier()) -> domain($domain);
+			$method   = Request :: getMethod();
 
-			return true;
+			if(true === is_callable([$redirect, $method])) {
+				
+				call_user_func_array([$redirect, $method], []);
+				return true;
+			}
 		}
 
 		//Else set HTTP status 404

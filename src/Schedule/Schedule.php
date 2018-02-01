@@ -205,7 +205,7 @@ class Schedule {
 	 */
 	private function bootstrap() {
 
-		include(dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR . 'bootstrap.php');
+		include(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 		new \Bootstrap(false);
 	}
 

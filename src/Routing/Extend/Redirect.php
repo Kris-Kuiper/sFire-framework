@@ -74,18 +74,21 @@ class Redirect {
 	 * @param string $domain
 	 * @return sFire\Routing\Redirect
 	 */
-	public function domain($domain) {
+	public function domain($domain = null) {
 
-		if(false === is_string($domain)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($domain)), E_USER_ERROR);
+		if(null !== $domain) {
+
+			if(false === is_string($domain)) {
+				return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($domain)), E_USER_ERROR);
+			}
+
+			//Check if identifier exists
+			if(false === Router :: routeExists($this -> identifier, $domain)) {
+				return trigger_error(sprintf('Identifier "%s" with domain "%s" does not exists', $this -> identifier, $domain), E_USER_ERROR);	
+			}
+
+			$this -> domain = $domain;
 		}
-
-		//Check if identifier exists
-		if(false === Router :: routeExists($this -> identifier, $domain)) {
-			return trigger_error(sprintf('Identifier "%s" with domain "%s" does not exists', $this -> identifier, $domain), E_USER_ERROR);	
-		}
-
-		$this -> domain = $domain;
 
 		return $this;
 	}
@@ -173,6 +176,20 @@ class Redirect {
 
 
 	/**
+	 * Simulate the current method
+	 * @return sFire\Routing\Redirect
+	 */
+	public function currentMethod() {
+
+		if(null === ($method = Request :: getMethod())) {
+			$method = 'get';
+		}
+
+		return $this -> redirect($method);
+	}
+
+
+	/**
 	 * Execute redirect
 	 * @param string $method
 	 */
@@ -198,6 +215,7 @@ class Redirect {
 		}
 
 		Request :: setURI($url);
+		Router :: setUrl($url);
 	}
 
 
