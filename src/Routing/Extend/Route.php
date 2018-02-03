@@ -202,7 +202,14 @@ final class Route {
 			$key = [$key => $value];
 		}
 
-		$this -> attr['assign'] = $key;
+		$assign = [];
+		$group  = Router :: getGroup();
+
+		if(true === isset($group['assign'])) {
+			$assign = $group['assign'];
+		}
+
+		$this -> attr['assign'] = $this -> arrayRecursiveMerge($key, $assign);
 
 		return $this;
 	}
@@ -350,7 +357,7 @@ final class Route {
 			}
 		}
 
-		$this -> attr['uses'] = $uses;
+		$this -> attr['uses'] = $identifier;
 
 		return $this;
 	}
@@ -556,6 +563,48 @@ final class Route {
 	public function getWhere() {
 		return $this -> getAttr('where');
 	}
+
+
+	/**
+	 * Return a single params set with the assign/uses methods
+	 * @param mixed $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function getParam($key, $default = null) {
+
+		$variables = $this -> getParams();
+
+		if(true === isset($variables[$key])) {
+			return $variables[$key];
+		}
+
+
+		return $default;
+	}
+
+
+	/**
+	 * Return all params set with the assign/uses methods
+	 * @return array
+	 */
+	public function getParams() {
+
+		$uses 	= $this -> getAttr('uses');
+		$assign = $this -> getAttr('assign') ? $this -> getAttr('assign') : [];
+		$output = [];
+
+		if(null !== $uses) {
+
+			foreach($uses as $identifier) {
+				$output = $this -> arrayRecursiveMerge($output, Router :: getRoute($identifier) -> getParams());
+			}
+		}
+
+		$output = $this -> arrayRecursiveMerge($assign, $output);
+
+		return $output;
+	}
 	
 
 	/**
@@ -622,6 +671,26 @@ final class Route {
 		Router :: addRoute($route);
 
 		return $route;
+	}
+
+
+	/**
+	 * Recursive merge arrays
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
+	private function arrayRecursiveMerge($array1, $array2) {
+
+		if(false === is_array($array1) || false === is_array($array2)) { 
+			return $array2; 
+		}
+
+		foreach($array2 as $key => $value) {
+			$array1[$key] = $this -> arrayRecursiveMerge(@$array1[$key], $value);
+		}
+
+		return $array1;
 	}
 }
 ?>
