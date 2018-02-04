@@ -188,7 +188,7 @@ final class Route {
 	 * @param mixed $value
 	 * @return sFire\Routing\Extend\Route
 	 */
-	public function assign($key, $value = null) {
+	public function assign($key, $value = null, $merge = true) {
 
 		if(false === is_string($key) && false === is_array($key)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or array, "%s" given', __METHOD__, gettype($key)), E_USER_ERROR);
@@ -198,6 +198,10 @@ final class Route {
 			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($value)), E_USER_ERROR);
 		}
 
+		if(false === is_bool($merge)) {
+			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($merge)), E_USER_ERROR);
+		}
+
 		if(true === is_string($key)) {
 			$key = [$key => $value];
 		}
@@ -205,11 +209,9 @@ final class Route {
 		$assign = [];
 		$group  = Router :: getGroup();
 
-		if(true === isset($group['assign'])) {
-			$assign = $group['assign'];
+		if(true === $merge && true === isset($group['assign'])) {
+			$this -> attr['assign'] = $this -> arrayRecursiveMerge($this -> attr['assign'], $group['assign']);
 		}
-
-		$this -> attr['assign'] = $this -> arrayRecursiveMerge($key, $assign);
 
 		return $this;
 	}
@@ -340,7 +342,7 @@ final class Route {
 	 * @param string|array $identifier
 	 * @return sFire\Routing\Extend\Route
 	 */
-	public function uses($identifier) {
+	public function uses($identifier, $merge = true) {
 
 		if(false === is_string($identifier) AND false === is_array($identifier)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or array, "%s" given', __METHOD__, gettype($identifier)), E_USER_ERROR);
@@ -348,6 +350,10 @@ final class Route {
 
 		if(true === is_string($identifier)) {
 			$identifier = [$identifier];
+		}
+
+		if(false === is_bool($merge)) {
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($merge)), E_USER_ERROR);
 		}
 
 		foreach($identifier as $id) {
@@ -359,16 +365,24 @@ final class Route {
 
 		$this -> attr['uses'] = $identifier;
 
+		$group = Router :: getGroup();
+
+		if(true === $merge && true === isset($group['uses'])) {
+			$this -> attr['uses'] = $this -> arrayRecursiveMerge($this -> attr['uses'], $group['uses']);
+		}
+
 		return $this;
 	}
 	
 
 	/**
 	 * Set the where
-	 * @param string|array $where
+	 * @param string|array $key
+	 * @param mixed $value
+	 * @param boolean $merge
 	 * @return sFire\Routing\Extend\Route
 	 */
-	public function where($key, $value = null) {
+	public function where($key, $value = null, $merge = true) {
 
 		if(false === is_string($key) && false === is_array($key)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or array, "%s" given', __METHOD__, gettype($key)), E_USER_ERROR);
@@ -378,11 +392,21 @@ final class Route {
 			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($value)), E_USER_ERROR);
 		}
 
+		if(false === is_bool($merge)) {
+			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($merge)), E_USER_ERROR);
+		}
+
 		if(true === is_string($key)) {
 			$key = [$key => $value];
 		}
 
 		$this -> attr['where'] = $key;
+
+		$group = Router :: getGroup();
+
+		if(true === $merge && true === isset($group['where'])) {
+			$this -> attr['where'] = $this -> arrayRecursiveMerge($this -> attr['where'], $group['where']);
+		}
 
 		return $this;
 	}

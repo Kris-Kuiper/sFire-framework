@@ -40,6 +40,12 @@ final class Router {
 
 
 	/**
+	 * @var array $params
+	 */
+	private static $params = [];
+
+
+	/**
 	 * @var sFire\Routing\Extend\Route $route
 	 */
 	private static $route;
@@ -174,7 +180,7 @@ final class Router {
     /**
 	 * Converts a route identifier to a string url, optional data array and optional domain
 	 * @param string $identifier
-	 * @param array $data
+	 * @param array|string $data
 	 * @param string $domain
 	 * @return string
 	 */
@@ -188,12 +194,16 @@ final class Router {
 			return trigger_error(sprintf('Route identifier "%s" not found in routes.php', $identifier), E_USER_ERROR);
 		}
 
-		if(null !== $data && false === is_array($data)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($data)), E_USER_ERROR);
+		if(null !== $data && false === is_string($data) && false === is_array($data)) {
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type array or string, "%s" given', __METHOD__, gettype($data)), E_USER_ERROR);
 		}
 
 		if(null !== $domain && false === is_string($domain)) {
 			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($domain)), E_USER_ERROR);
+		}
+
+		if(true === is_string($data)) {
+			$data = [$data];
 		}
 
 		if(null === $data) {
@@ -469,6 +479,29 @@ final class Router {
 
 
 	/**
+	 * Set the params
+	 * @param array $params
+	 */
+	public static function setParams($params) {
+
+		if(false === is_array($params)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($params)), E_USER_ERROR);
+		}
+
+		static :: $params = $params;
+	}
+
+
+	/**
+	 * Retrieves the params
+	 * @return array
+	 */
+	public static function getParams() {
+		return static :: $params;
+	}
+
+
+	/**
 	 * Recursive merge arrays
 	 * @param array $array1
 	 * @param array $array2
@@ -649,6 +682,7 @@ final class Router {
 						$match = array_unique($match);
 						
 						static :: setRoute($route);
+						static :: setParams($match);
 
 						//Check if route is viewable
 						if(true === $route -> isViewable() || null === $route -> getViewable()) {
