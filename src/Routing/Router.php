@@ -86,7 +86,7 @@ final class Router {
 		'int' 			=> '\d+',
 		'float' 		=> '\d+\.\d{1,}',
 		'boolean' 		=> 'true|false|0|1',
-		'string' 		=> '[^?]',
+		'string' 		=> '[^?]+',
 		'alphanumeric' 	=> '[a-zA-Z0-9]+'
 	];
 

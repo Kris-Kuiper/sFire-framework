@@ -460,10 +460,10 @@ final class Route {
 		$this -> attr['method'] 	= 'any';
 		$this -> attr['url'] 		= $identifier;
 		$this -> attr['identifier'] = $identifier;
-		$this -> attr['viewable'] 	= false;
 
 		$route = new Route();
 		$route -> setAttr(array_merge(Router :: getGroup(), $this -> attr));
+		$route -> viewable(false);
 
 		Router :: addRoute($route);
 		Router :: addErrorRoute($type, $route, $default);
