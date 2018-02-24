@@ -9,71 +9,150 @@
  
 namespace sFire\Session;
 
+use sFire\Session\AbstractSession;
+
 class Session {
 
 
 	/**
-	 * @var mixed $driver
-	 */
-	private $driver;
+     * @param string $driver
+     */
+    private $driver;
 
 
-	/**
-	 * Constructor
-	 * @param mixed $driver
-	 */
-	public function __construct($driver = null) {
-		
-		if(null !== $driver) {
-			$this -> driver = $driver;
-		}
-	}
+    /**
+     * @param mixed $driverInstance
+     */
+    private $driverInstance;
 
 
 	/**
 	 * Sets the driver
-	 * @param mixed $driver
-	 * @return sFire\Session\Session
+	 * @param string $driver
+	 * @return sFire\Cache\Cache
 	 */
-	public function setDriver($driver) {
-		
-		$this -> driver = $driver;
+    public function setDriver($driver) {
+
+    	if(false === is_string($driver)) {
+    		return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($driver)), E_USER_ERROR);
+    	}
+
+    	if(false === class_exists($driver)) {
+
+            $driver = __NAMESPACE__ . '\\Driver\\' . $driver;
+        
+            if(false === class_exists($driver)) {
+        		return trigger_error(sprintf('Driver "%s" does not exists', $driver), E_USER_ERROR);
+        	}
+        }
+
+        $this -> driver = $driver;
+
+        return $this;
+    }
+
+
+    /**
+	 * Stores a new piece of data and tries to merge the data if already exists
+	 * @param string|array $key
+	 * @param mixed $value
+	 */
+	public function add($key, $value) {
+
+		$this -> call() -> add($key, $value);
 		return $this;
 	}
 
 
 	/**
-	 * Returns the driver
-	 * @return mixed
+	 * Stores a new piece of data and overwrites the data if already exists
+	 * @param string $key
+	 * @param mixed $value
 	 */
-	public function getDriver() {
-		return $this -> driver;
+	public function set($key, $value) {
+
+		$this -> call() -> set($key, $value);
+		return $this;
 	}
 
 
 	/**
-	 * Universal method for calling methods of the driver
-	 * @param string $method
-	 * @param array $params
+	 * Check if an item exists
+	 * @param string $key
+	 * @return boolean
+	 */
+	public function has($key) {
+		return $this -> call() -> has($key);
+	}
+
+
+	/**
+	 * Deletes all data
+	 */
+	public function flush() {
+
+		$this -> call() -> flush();
+		return $this;
+	}
+
+
+	/**
+	 * Remove data based on key
+	 * @param string $key
+	 */
+	public function remove($key) {
+
+		$this -> call() -> remove($key);
+		return $this;
+	}
+
+
+	/**
+	 * Retrieve data based on key. Returns $default if not exists
+	 * @param string|array $key
+	 * @param mixed $default
 	 * @return mixed
 	 */
-	public function __call($method, $params) {
-
-		if(null === $this -> getDriver()) {
-			return trigger_error('Driver is not set. Set the driver with the setDriver() method', E_USER_ERROR);
-		}
-
-		$driver = $this -> getDriver();
-
-		if(false === is_callable([$driver, $method])) {
-
-			$class = new \ReflectionClass($driver);
-			$type = $class->getName();
-
-			trigger_error(sprintf('Driver "%s" does not have the "%s" method ', $type, $method), E_USER_ERROR);
-		}
-
-		return call_user_func_array([$driver, $method], $params);
+	public function get($key, $default = null) {
+		return $this -> call() -> get($key, $default);
 	}
+
+
+	/**
+	 * Retrieve and delete an item. Returns $default if not exists
+	 * @param string|array $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function pull($key, $default = null) {
+		return $this -> call() -> pull($key, $default);
+	}
+
+
+	/**
+	 * Retrieve all data
+	 * @return mixed
+	 */
+	public function all() {
+		return $this -> call() -> all();
+	}
+
+
+    /**
+     * Check if driver is set and returns it
+     * @return mixed
+     */
+    private function call() {
+
+        if(null === $this -> driver) {
+            return trigger_error('Driver is not set. Set the driver with the setDriver() method', E_USER_ERROR);
+        }
+
+        if(null === $this -> driverInstance) {
+        	$this -> driverInstance = new $this -> driver();
+        }
+
+        return $this -> driverInstance;
+    }
 }
 ?>

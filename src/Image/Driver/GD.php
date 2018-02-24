@@ -9,55 +9,28 @@
  
 namespace sFire\Image\Driver;
 
-use sFire\Image\Image;
+use sFire\Image\AbstractImage;
+use sFire\Image\Color;
 
-class GD {
-
-	/**
-	 * @var array $colors
-	 */
-	private $colors = ['black', 'blue', 'green', 'red', 'lightblue', 'yellow', 'pink', 'white', 'orange', 'purple', 'gray', 'brown'];
+class GD extends AbstractImage {
 
 
 	/**
-	 * @var array $image
-	 */
-	private $image = [];
+     * @param resource $image
+     */
+	private $image;
 
 
 	/**
 	 * Constructor
-	 * @param string $image
-	 * @return sFire\System\Image
+	 * @param resource $image
 	 */
-	public function __construct($file) {
-
-		if(false === is_string($file)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($file)), E_USER_ERROR);
-		}
-
-		if(false === is_file($file)) {
-			return trigger_error(sprintf('File "%s" passed to %s() does not exists', $file, __METHOD__), E_USER_ERROR);
-		}
-
-		if(false === is_readable($file)) {
-			return trigger_error(sprintf('File "%s" passed to %s() is not readable', $file, __METHOD__), E_USER_ERROR);
-		}
-
-		if(list($width, $height) = @getimagesize($file)) {
-			
-			$this -> image = [
-
-				'location' 	=> $file, 
-				'width' 	=> $width, 
-				'height' 	=> $height, 
-				'extension' => pathinfo($file, PATHINFO_EXTENSION)
-			];
-		}
+	public function __construct($image) {
+		$this -> image = $image;
 	}
 
 
-	/**
+    /**
 	 * Returns an array with all the hexadecimal colors used in an image
 	 * @param int $limit
 	 * @param boolean $round
@@ -65,25 +38,18 @@ class GD {
 	 */
 	public function getHexColors($limit = null, $round = true) {
 
-		if(null !== $limit && false === ('-' . intval($limit) == '-' . $limit)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($limit)), E_USER_ERROR);
-		}
-
-		if(null !== $round && false === is_bool($round)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($round)), E_USER_ERROR);
-		}
-
-		$image = imagecreatefromstring(file_get_contents($this -> image['location']));
-		$hex   = [];
+		$hex 	= [];
+		$width 	= imagesx($this -> image);
+		$height = imagesy($this -> image);
 			
-		for($y = 0; $y < $this -> image['height']; $y++) {
+		for($y = 0; $y < $height; $y++) {
 
-			for($x = 0; $x < $this -> image['width']; $x++) {
+			for($x = 0; $x < $width; $x++) {
 
-				$index = imagecolorat($image, $x, $y);
-				$color = imagecolorsforindex($image, $index);
+				$index = imagecolorat($this -> image, $x, $y);
+				$color = imagecolorsforindex($this -> image, $index);
 				
-				if($round) {
+				if(true === $round) {
 
 					foreach(['red', 'green', 'blue'] as $type) {
 
@@ -110,23 +76,52 @@ class GD {
 
 
 	/**
+	 * Returns an array with base colors and their percentages on the found colors of an image
+	 * @param integer $limit
+	 * @return array
+	 */
+	public function getBaseColors($limit = 10) {
+
+		$hexs 	= $this -> getHexColors();
+		$output = [];
+		$index  = 0;
+
+		foreach($hexs as $hex => $amount) {
+
+			if($index >= $limit) {
+				break;
+			}
+
+			$color = Color :: name((string) $hex);
+
+			if(null !== $color) {
+				$output[] = $color;
+			}
+
+			$index++;
+		}
+
+		return $output;
+	}
+
+
+	/**
 	 * Returns a percentage (integer) of how much an image is considered black and white
-	 * @return int
+	 * @return integer
 	 */
 	public function blackWhite() {
 
-		$image = imagecreatefromstring(file_get_contents($this -> image['location']));
-
-		$r = [];
-		$g = [];
-		$b = [];
-		$c = 0;
+		$tmp = imagecreatefromstring(file_get_contents($this -> image['location']));
+		$r 	 = [];
+		$g 	 = [];
+		$b 	 = [];
+		$c 	 = 0;
 
 		for($x = 0; $x < $this -> image['width']; $x++) {
 
 			for($y = 0; $y < $this -> image['height']; $y++) {
 
-				$rgb = imagecolorat($image, $x, $y);
+				$rgb = imagecolorat($tmp, $x, $y);
 				
 				$r[$x][$y] = ($rgb >> 16) & 0xFF;
 				$g[$x][$y] = ($rgb >> 8) & 0xFF;
@@ -143,157 +138,130 @@ class GD {
 
 
 	/**
-	 * Returns the base color of an image
-	 * @return string
-	 */
-	public function getBaseColor() {
-
-		$colors = $this -> getBaseColors();
-
-		return array_search(max($colors), $colors);
-	}
-
-
-	/**
-	 * Returns an array with base colors and their percentages on the found colors of an image
-	 * @return array
-	 */
-	public function getBaseColors() {
-
-		$image  = imagecreatefromstring(file_get_contents($this -> image['location']));
-		$amount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-		for($x = 0; $x < $this -> image['width']; $x++) {
-
-			for($y = 0; $y < $this -> image['height']; $y++) {
-				$amount[$this -> pixel2color(imagecolorat($image, $x, $y))]++;
-			}
-		}
-
-		$colors = [];
-		$sum 	= array_sum($amount);
-		
-		foreach($amount as $index => $color) {
-			$colors[$this -> colors[$index]] = (floor(1000 * $color / $sum) / 10);
-		}
-		
-		return $colors;
-	}
-
-
-	/**
 	 * Give current image a negative filter
-	 * @return sFire\System\Image
+	 * @return resource
 	 */
 	public function negate() {
-		return $this -> imageFilter(IMG_FILTER_NEGATE);
+		
+		$this -> filter(IMG_FILTER_NEGATE);
+		return $this -> image;
 	}
 
 
 	/**
 	 * Give current image a higher or lower contrast
 	 * @param int $level
-	 * @return sFire\System\Image
+	 * @return resource
 	 */
 	public function contrast($level = 50) {
 
-		if(false === ('-' . intval($level) == '-' . $level)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($level)), E_USER_ERROR);
-		}
-
-		return $this -> imageFilter(IMG_FILTER_CONTRAST, $level);
+		$this -> filter(IMG_FILTER_CONTRAST, $level);
+		return $this -> image;
 	}
 
 
 	/**
 	 * Give current image a higher or lower brightness
-	 * @return sFire\System\Image
+	 * @param int $level
+	 * @return resource
 	 */
 	public function brightness($level = 50) {
 
-		if(false === ('-' . intval($level) == '-' . $level)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($level)), E_USER_ERROR);
-		}
-
-		return $this -> imageFilter(IMG_FILTER_BRIGHTNESS, $level);
+		$this -> filter(IMG_FILTER_BRIGHTNESS);
+		return $this -> image;
 	}
 
 
 	/**
 	 * Give current image a grayscale filter
-	 * @return sFire\System\Image
+	 * @return resource
 	 */
 	public function grayscale() {
-		return $this -> imageFilter(IMG_FILTER_GRAYSCALE);
+
+		$this -> filter(IMG_FILTER_GRAYSCALE);
+		return $this -> image;
 	}
 
 
 	/**
 	 * Give current image a edgedetect filter
-	 * @return sFire\System\Image
+	 * @return resource
 	 */
 	public function edgedetect() {
-		return $this -> imageFilter(IMG_FILTER_EDGEDETECT);
+
+		$this -> filter(IMG_FILTER_EDGEDETECT);
+		return $this -> image;
 	}
 
 
 	/**
 	 * Give current image a emboss filter
-	 * @return sFire\System\Image
+	 * @return resource
 	 */
 	public function emboss() {
-		return $this -> imageFilter(IMG_FILTER_EMBOSS);
+
+		$this -> filter(IMG_FILTER_EMBOSS);
+		return $this -> image;
 	}
 
 
 	/**
 	 * Give current image a gaussian blur filter
-	 * @return sFire\System\Image
+	 * @return resource
 	 */
 	public function gaussianblur() {
-		return $this -> imageFilter(IMG_FILTER_GAUSSIAN_BLUR);
+
+		$this -> filter(IMG_FILTER_GAUSSIAN_BLUR);
+		return $this -> image;
 	}
 
 
 	/**
 	 * Give current image a selective blur filter
-	 * @return sFire\System\Image
+	 * @return resource
 	 */
 	public function selectiveblur() {
-		return $this -> imageFilter(IMG_FILTER_SELECTIVE_BLUR);
+
+		$this -> filter(IMG_FILTER_SELECTIVE_BLUR);
+		return $this -> image;
 	}
 
 
 	/**
 	 * Give current image a mean removal filter
-	 * @return sFire\System\Image
+	 * @return resource
 	 */
 	public function meanremoval() {
-		return $this -> imageFilter(IMG_FILTER_MEAN_REMOVAL);
+
+		$this -> filter(IMG_FILTER_MEAN_REMOVAL);
+		return $this -> image;
 	}
 
 
 	/**
 	 * Give current image a colorize filter
-	 * @return sFire\System\Image
+	 * @param int $r
+	 * @param int $g
+	 * @param int $b
+	 * @param int $alpha
+	 * @return resource
 	 */
 	public function colorize($r, $g, $b, $alpha) {
-		return $this -> imageFilter(IMG_FILTER_COLORIZE, $r, $g, $b, $alpha);
+
+		$this -> filter(IMG_FILTER_COLORIZE, $r, $g, $b, $alpha);
+		return $this -> image;
 	}
 
 
 	/**
 	 * Give current image a smooth filter
 	 * @param int $level
-	 * @return sFire\System\Image
+	 * @return resource
 	 */
 	public function smooth($level = 50) {
 
-		if(false === ('-' . intval($level) == '-' . $level)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($level)), E_USER_ERROR);
-		}
-
-		return $this -> imageFilter(IMG_FILTER_SMOOTH, $level);
+		$this -> filter(IMG_FILTER_SMOOTH, $level);
+		return $this -> image;
 	}
 
 
@@ -301,19 +269,12 @@ class GD {
 	 * Give current image a pixelate filter
 	 * @param int $blocksize
 	 * @param int $effect
-	 * @return sFire\System\Image
+	 * @return resource
 	 */
 	public function pixelate($blocksize = 5, $effect = 50) {
 
-		if(false === ('-' . intval($blocksize) == '-' . $blocksize)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($blocksize)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($effect) == '-' . $effect)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($effect)), E_USER_ERROR);
-		}
-
-		return $this -> imageFilter(IMG_FILTER_PIXELATE, $blocksize, $effect);
+		$this -> filter(IMG_FILTER_PIXELATE, $blocksize, $effect);
+		return $this -> image;
 	}
 
 
@@ -323,54 +284,11 @@ class GD {
 	 * @param int $y
 	 * @param int $width
 	 * @param int $height
-	 * @param int $quality
-	 * @param string $file
 	 * @param boolean $interlace
-	 * @return sFire\System\Image
+	 * @return boolean
 	 */
-	public function crop($x, $y, $width, $height, $quality = 90, $file = null, $interlace = false) {
-
-		if(false === ('-' . intval($x) == '-' . $x)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($x)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($y) == '-' . $y)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($y)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($width) == '-' . $width)) {
-			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($width)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($height) == '-' . $height)) {
-			return trigger_error(sprintf('Argument 4 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($height)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($quality) == '-' . $quality)) {
-			return trigger_error(sprintf('Argument 5 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($quality)), E_USER_ERROR);
-		}
-
-		if(null !== $file && false === is_string($file)) {
-			return trigger_error(sprintf('Argument 6 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($file)), E_USER_ERROR);
-		}
-
-		if(false === is_bool($interlace)) {
-			return trigger_error(sprintf('Argument 7 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($interlace)), E_USER_ERROR);
-		}
-
-		$file 		= $file ? $file : $this -> image['location'];
-		$extension  = $file ? strtolower(pathinfo($file, PATHINFO_EXTENSION)) : $this -> image['extension'];
-
-		$quality = $this -> getQuality($quality, $extension);
-
-		//Check if folder is writeable
-		if(false === is_writable(dirname($file))) {
-			return trigger_error(sprintf('Folder "%s" is not writable', dirname($file)), E_USER_ERROR);
-		}
-
-		$this -> createImage($x, $y, $width, $height, $width, $height, $quality, $file, $interlace);
-
-		return new Image(new GD($file));
+	public function crop($x, $y, $width, $height, $interlace = false) {
+		return $this -> createImage($x, $y, $width, $height, $width, $height, $interlace);
 	}
 
 
@@ -379,52 +297,19 @@ class GD {
 	 * @param int $width
 	 * @param int $height
 	 * @param boolean $ratio
-	 * @param int $quality
-	 * @param string $file
 	 * @param boolean $interlace
-	 * @return sFire\System\Image
+	 * @return boolean
 	 */
-	public function resize($width, $height, $ratio = false, $quality = 90, $file = null, $interlace = false) {
+	public function resize($width, $height, $ratio = false, $interlace = false) {
 
-		if(false === ('-' . intval($width) == '-' . $width)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($width)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($height) == '-' . $height)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($height)), E_USER_ERROR);
-		}
-
-		if(null !== $ratio && false === is_bool($ratio)) {
-			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($ratio)), E_USER_ERROR);
-		}
-
-		if(null !== $quality && false === ('-' . intval($quality) == '-' . $quality)) {
-			return trigger_error(sprintf('Argument 4 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($quality)), E_USER_ERROR);
-		}
-
-		if(null !== $file && false === is_string($file)) {
-			return trigger_error(sprintf('Argument 5 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($file)), E_USER_ERROR);
-		}
-
-		if(false === is_bool($interlace)) {
-			return trigger_error(sprintf('Argument 6 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($interlace)), E_USER_ERROR);
-		}
-
-		$file 		= $file ? $file : $this -> image['location'];
-		$extension  = $file ? strtolower(pathinfo($file, PATHINFO_EXTENSION)) : $this -> image['extension'];
-		$quality 	= $this -> getQuality($quality, $extension);
-
-		//Check if folder is writeable
-		if(false === is_writable(dirname($file))) {
-			return trigger_error(sprintf('Folder "%s" is not writable', dirname($file)), E_USER_ERROR);
-		}
+		$image = ['width' => imagesx($this -> image), 'height' => imagesy($this -> image)];
 
 		//Set width and height
 		if($height == 0 && $width > 0) {
-			$height = round($this -> image['height'] / ($this -> image['width'] / $width), 0);
+			$height = round($image['height'] / ($image['width'] / $width), 0);
 		}
 		elseif($width == 0 && $height > 0) {
-			$width = round($this -> image['width'] / ($this -> image['height'] / $height), 0);
+			$width = round($image['width'] / ($image['height'] / $height), 0);
 		}
 
 		$x = 0;
@@ -433,208 +318,108 @@ class GD {
 		//Ratio
 		if(true === $ratio) {
 
-			$ratio 		= [$this -> image['width'] / $this -> image['height'], $width / $height];
-			$tmp_width 	= $this -> image['width'];
-			$tmp_height = $this -> image['height'];
+			$ratio 		= [$image['width'] / $image['height'], $width / $height];
+			$tmp_width 	= $image['width'];
+			$tmp_height = $image['height'];
 
 			if($ratio[0] > $ratio[1]) {
 
-				$this -> image['width'] = $this -> image['height'] * $ratio[1];
-				$x = ($tmp_width - $this -> image['width']) / 2;
+				$image['width'] = $image['height'] * $ratio[1];
+				$x = ($tmp_width - $image['width']) / 2;
 			}
 			elseif($ratio[0] < $ratio[1]) {
 
-				$this -> image['height'] = $this -> image['width'] / $ratio[1];
-				$y = ($tmp_height - $this -> image['height']) / 2;
+				$image['height'] = $image['width'] / $ratio[1];
+				$y = ($tmp_height - $image['height']) / 2;
 			}
 		}
 
 		//Resizing
-		$this -> createImage($x, $y, $this -> image['width'], $this -> image['height'], $width, $height, $quality, $file, $interlace);
-
-		return new Image(new GD($file));
+		return $this -> createImage($x, $y, $image['width'], $image['height'], $width, $height, $interlace);
 	}
 
 
 	/**
-	 * Returns a base color index for given rgb integer
-	 * @param int $rgb
-	 * @return int
+	 * Rotates an image with a given angle
+	 * @param int $degrees
+	 * @param int $bgcolor
+	 * @param int $transparent
+	 * @return resource
 	 */
-	private function pixel2color($rgb) {
+	public function rotate($degrees, $bgcolor = 0, $transparent = 0) {
 
-		if(false === ('-' . intval($rgb) == '-' . $rgb)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($rgb)), E_USER_ERROR);
-		}
+		imagealphablending($this -> image, false);
+    	imagesavealpha($this -> image, true);
 
-		$border = 40;
-		$r = ($rgb >> 16) & 0xFF;
-		$g = ($rgb >> 8) & 0xFF;
-		$b = $rgb & 0xFF;
+	    $rotation = imagerotate($this -> image, $degrees, imageColorAllocateAlpha($this -> image, 0, 0, 0, $bgcolor), $transparent);
+	    imagealphablending($rotation, false);
+	    imagesavealpha($rotation, true);
 
-		if($r < $border && $g < $border && $b < $border) {
-			$color = 0; //Black
-		}
-		elseif($r > (255 - $border) && $g > (255 - $border) && $b > (255 - $border)) {
-			$color = 7; //White
-		}
-		else {
+		$this -> image = $rotation;
+		return $this -> image;
+	}
 
-			$max = max([$r, $g, $b]);
-			$min = min([$r, $g, $b]);
-			
-			if($r < $max / 2.5 && $g < $max / 2.5 && $b == $max) { $color = 1; } //Blue
-			elseif($r < $max && $g == $max  && $b < $max / 1.4) { $color = 2; } //Green
-			elseif($r == $max && $g < 105 && $r - $g < 51 && $g < $r && $b == $min) { $color = 11; } //Brown
-			elseif($r == $max  && $g < 100 / 1.9 && $b < $max / 1.9) { $color = 3; } //Red
-			elseif($r > $g && $g == $min && $g < 103 && $b > $min) { $color = 9; } 	//Purple
-			elseif(($r > 50 && $r < 220 && ($r - $min < 35)) && ($g > 50 && $g < 220 && ($g - $min < 35)) && ($b > 50 && $b < 220) && ($b - $min < 35)) { $color = 10; } //Gray
-			elseif($r == $max && $g > 99 && $g < 180 && $b == $min && $b < 55) { $color = 8; } //Orange
-			elseif($r == $min) { $color = 4; } //Light blue
-			elseif($b == $min) { $color = 5; } //Yellow
-			elseif($g == $min) { $color = 6; } //Pink
-		}
+
+	/**
+	 * Flip the current image horizontal, vertical or both
+	 * @param int $mode
+	 */
+	public function flip($mode) {
 		
-		return $color;
+		imageflip($this -> image, $mode);
+		return $this -> image;
 	}
 
 
 	/**
-	 * Applies a filter to current image
-	 * @return sFire\System\Image
-	 */
-	private function imageFilter() {
-
-		//Check if folder is writeable
-		if(false === is_writable(dirname($this -> image['location']))) {
-			trigger_error(sprintf('Directory "%s" should be writable', dirname($this -> image['location'])), E_USER_ERROR);
-		}
-
-		$image = imagecreatefromstring(file_get_contents($this -> image['location']));
-		
-		call_user_func_array('imagefilter', array_merge([$image], func_get_args()));
-
-		switch(strtolower($this -> image['extension'])) {
-
-			case 'bmp'	: imagewbmp($image, $this -> image['location']); break;
-			case 'png'	: imagepng($image, $this -> image['location'], 9); break;
-			case 'gif'	: imagegif($image, $this -> image['location']); break;
-			default 	: imagejpeg($image, $this -> image['location'], 90); break;
-		}
-
-	    imagedestroy($image);
-
-		return $this;
-	}
-
-
-	/**
-	 * Validates and returns quality based on image extension
-	 * @param int $quality
-	 * @param string $extension
-	 * @return int
-	 */
-	private function getQuality($quality, $extension) {
-
-		if(false === ('-' . intval($quality) == '-' . $quality)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($quality)), E_USER_ERROR);
-		}
-
-		if(false === is_string($extension)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($extension)), E_USER_ERROR);
-		}
-
-		$quality = $quality < 0 || $quality > 100 ? 90 : intval($quality);
-
-		if(strtolower($extension) === 'png' && $quality > 9) {
-			$quality = floor(($quality - 1) / 10);
-		}
-
-		return $quality;
-	}
-
-
-	/**
+	 * Creates new image resource. Returns false if failed.
 	 * @param int $x
 	 * @param int $y
 	 * @param int $width
 	 * @param int $height
 	 * @param int $new_width
 	 * @param int $new_height
-	 * @param int $quality
-	 * @param string $file
 	 * @param boolean $interlace
-	 * @return boolean
+	 * @return resource|boolean
 	 */
-	private function createImage($x, $y, $width, $height, $new_width, $new_height, $quality, $file, $interlace = false) {
+	private function createImage($x, $y, $width, $height, $new_width, $new_height, $interlace = false) {
 
-		if(false === ('-' . intval($x) == '-' . $x)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($x)), E_USER_ERROR);
-		}
+		$resource = imagecreatetruecolor($new_width, $new_height);
 
-		if(false === ('-' . intval($y) == '-' . $y)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($y)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($width) == '-' . $width)) {
-			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($width)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($height) == '-' . $height)) {
-			return trigger_error(sprintf('Argument 4 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($height)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($new_width) == '-' . $new_width)) {
-			return trigger_error(sprintf('Argument 5 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($new_width)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($new_height) == '-' . $new_height)) {
-			return trigger_error(sprintf('Argument 6 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($new_height)), E_USER_ERROR);
-		}
-
-		if(false === ('-' . intval($quality) == '-' . $quality)) {
-			return trigger_error(sprintf('Argument 7 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($quality)), E_USER_ERROR);
-		}
-
-		if(null !== $file && false === is_string($file)) {
-			return trigger_error(sprintf('Argument 8 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($file)), E_USER_ERROR);
-		}
-
-		if(false === is_bool($interlace)) {
-			return trigger_error(sprintf('Argument 9 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($interlace)), E_USER_ERROR);
-		}
-
-		$image = imagecreatefromstring(file_get_contents($this -> image['location']));
-		$new   = imagecreatetruecolor($new_width, $new_height);
-
-		if(false === imagesavealpha($new, true)) {
+		if(false === imagesavealpha($resource, true)) {
 			trigger_error('Could not set the flag to save full alpha channel', E_USER_ERROR);
 		}
 
-		if(false === imagealphablending($new, false)) {
+		if(false === imagealphablending($resource, false)) {
 			trigger_error('Could not set the blending mode', E_USER_ERROR);
 		}
 
-		if(false === imagefill($new, 0, 0, imagecolorallocate($new, 255, 255, 255))) {
+		if(false === imagefill($resource, 0, 0, imagecolorallocate($resource, 255, 255, 255))) {
 			trigger_error('Could not flood fill the image', E_USER_ERROR);
 		}
 
-		if(false === imagecopyresampled($new, $image, 0, 0, $x, $y, $new_width, $new_height, $width, $height)) {
+		if(false === imagecopyresampled($resource, $this -> image, 0, 0, $x, $y, $new_width, $new_height, $width, $height)) {
 			trigger_error('Could not copy and resize part of an image with resampling', E_USER_ERROR);
 		}
 
-		if((true === $interlace && imageinterlace($image, true)) || false === $interlace) {
-
-			imagedestroy($image);
-
-			switch(strtolower($this -> image['extension'])) {
-
-				case 'bmp'	: imagewbmp($new, $file); break;
-				case 'png'	: imagepng($new, $file, $quality); break;
-				case 'gif'	: imagegif($new, $file); break;
-				default 	: imagejpeg($new, $file, $quality); break;
-			}
+		if((true === $interlace && imageinterlace($this -> image, true)) || false === $interlace) {
+				
+			$this -> image = $resource;
+			return $this -> image;
 		}
+
+		return false;
+	}
+
+
+	/**
+	 * Applies a filter to current image
+	 * @return boolean
+	 */
+	private function filter() {
+
+		$params = func_get_args();
+		return call_user_func_array('imagefilter', array_merge([$this -> image], $params));
 	}
 }
 ?>

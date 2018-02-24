@@ -52,10 +52,6 @@ final class Filesystem implements CacheInterface {
 	 */
 	public function set($key, $value, $expiration = 300) {
 
-		if(false === ('-' . intval($expiration) == '-' . $expiration)) {
-			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($expiration)), E_USER_ERROR);
-		}
-
 		$files = glob(Path :: get('cache-shared') . $this -> generateName($key));
 
 		if(count($files) > 0 && true === is_array($files)) {
@@ -103,7 +99,7 @@ final class Filesystem implements CacheInterface {
 	/**
 	 * Expire cache based on key
 	 * @param mixed $key
-	 * @return sFire\Cache\Files
+	 * @return sFire\Cache\Filesystem
 	 */
 	public function expire($key) {
 
@@ -121,7 +117,7 @@ final class Filesystem implements CacheInterface {
 
 	/**
 	 * Clear all cache files
-	 * @return sFire\Cache\Files
+	 * @return sFire\Cache\Filesystem
 	 */
 	public function clear() {
 
@@ -142,7 +138,7 @@ final class Filesystem implements CacheInterface {
 
 	/**
 	 * Clear all expired cache
-	 * @return sFire\Cache\Files
+	 * @return sFire\Cache\Filesystem
 	 */
 	public function clearExpired() {
 
@@ -169,13 +165,9 @@ final class Filesystem implements CacheInterface {
 	 * Reset lifetime of a cached file
 	 * @param mixed $key
 	 * @param int $expiration
-	 * @return sFire\Cache\Files
+	 * @return sFire\Cache\Filesystem
 	 */
 	public function touch($key, $expiration = null) {
-
-		if(null !== $expiration && false === ('-' . intval($expiration) == '-' . $expiration)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($expiration)), E_USER_ERROR);
-		}
 
 		$files = glob(Path :: get('cache-shared') . $this -> generateName($key));
 

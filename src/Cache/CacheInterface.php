@@ -11,11 +11,6 @@ namespace sFire\Cache;
 
 interface CacheInterface {
 
-	/**
-	 * Constructor
-	 */
-	public function __construct();
-	
 
 	/**
 	 * Set new cache by key name
