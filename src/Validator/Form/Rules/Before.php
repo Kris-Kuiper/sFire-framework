@@ -34,18 +34,39 @@ class Before implements RuleInterface {
 		$params = $this -> getParameters();
 		$value 	= $this -> getValue();
 
-		if(false === is_string($value) && false === is_numeric($value)) {
-			return false;
-		}
-
 		if(false === isset($params[0]) && false === is_string($params[0])) {
 			return trigger_error(sprintf('Missing argument 1 for %s', __METHOD__), E_USER_ERROR);
 		}
 
-		$value  = strtotime($value);
-		$param  = strtotime($params[0]);
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
 
-		if(is_int($value) && is_int($param)) {
+				if(false === $this -> check($val, $params)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value, $params);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @param array $params
+	 * @return boolean
+	 */
+	private function check($value, $params) {
+
+		$value = strtotime($value);
+		$param = strtotime($params[0]);
+
+		if(true === is_int($value) && true === is_int($param)) {
 			return true === ($value <= $param);
 		}
 

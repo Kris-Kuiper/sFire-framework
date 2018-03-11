@@ -9,71 +9,142 @@
  
 namespace sFire\Cache;
 
-class Cache {
+use sFire\Cache\CacheInterface;
+
+class Cache implements CacheInterface {
 
 
 	/**
-	 * @var mixed $driver
-	 */
-	private $driver;
+     * @param string $driver
+     */
+    private $driver;
 
 
-	/**
-	 * Constructor
-	 * @param mixed $driver
-	 */
-	public function __construct($driver = null) {
-		
-		if(null !== $driver) {
-			$this -> driver = $driver;
-		}
-	}
+    /**
+     * @param mixed $driverInstance
+     */
+    private $driverInstance;
 
 
 	/**
 	 * Sets the driver
-	 * @param mixed $driver
+	 * @param string $driver
 	 * @return sFire\Cache\Cache
 	 */
-	public function setDriver($driver) {
+    public function setDriver($driver) {
+
+    	if(false === is_string($driver)) {
+    		return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($driver)), E_USER_ERROR);
+    	}
+
+        if(false === class_exists($driver)) {
+
+            $driver = __NAMESPACE__ . '\\Driver\\' . $driver;
+        
+            if(false === class_exists($driver)) {
+        		return trigger_error(sprintf('Driver "%s" does not exists', $driver), E_USER_ERROR);
+        	}
+        }
+
+        $this -> driver = $driver;
+
+        return $this;
+    }
+
+
+    /**
+     * Set new cache by key name
+     * @param mixed $key
+     * @param mixed $value
+     * @param int $expiration
+     * @return sFire\Cache\Cache
+     */
+    public function set($key, $value, $expiration = 300) {
+
+    	if(false === ('-' . intval($expiration) == '-' . $expiration)) {
+			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($expiration)), E_USER_ERROR);
+		}
+    	
+    	$this -> call() -> set($key, $value, $expiration);
+    	return $this;
+    }
+
+
+    /**
+     * Returns the cache if available, otherwise returns the default parameter
+     * @param mixed $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get($key, $default = null) {
+    	return $this -> call() -> get($key, $default);
+    }
+
+
+    /**
+     * Expire cache based on key
+     * @param mixed $key
+     * @return sFire\Cache\Cache
+     */
+    public function expire($key) {
 		
-		$this -> driver = $driver;
+		$this -> call() -> expire($key);
 		return $this;
-	}
+    }
 
 
-	/**
-	 * Returns the driver
-	 * @return mixed
-	 */
-	public function getDriver() {
-		return $this -> driver;
-	}
+    /**
+     * Clear all cache files
+     * @return sFire\Cache\Cache
+     */
+    public function clear() {
+		
+		$this -> call() -> clear();
+		return $this;
+    }
 
 
-	/**
-	 * Universal method for calling methods of the driver
-	 * @param string $method
-	 * @param array $params
-	 * @return mixed
-	 */
-	public function __call($method, $params) {
+    /**
+     * Reset lifetime of a cached file
+     * @param mixed $key
+     * @param int $expiration
+     * @return sFire\Cache\Cache
+     */
+    public function touch($key, $expiration = null) {
 
-		if(null === $this -> getDriver()) {
-			return trigger_error('Driver is not set. Set the driver with the setDriver() method', E_USER_ERROR);
+    	if(null !== $expiration && false === ('-' . intval($expiration) == '-' . $expiration)) {
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($expiration)), E_USER_ERROR);
 		}
 
-		$driver = $this -> getDriver();
+		$this -> call() -> touch($key, $expiration);
+		return $this;
+    }
 
-		if(false === is_callable([$driver, $method])) {
 
-			$class = new \ReflectionClass($driver);
-			$type = $class->getName();
+    /**
+     * Returns if a cache exists based on key
+     * @return boolean
+     */
+    public function exists($key) {
+    	return $this -> call() -> exists($key);
+    }
 
-			trigger_error(sprintf('Driver "%s" does not have the "%s" method ', $type, $method), E_USER_ERROR);
-		}
 
-		return call_user_func_array([$driver, $method], $params);
-	}
+    /**
+     * Check if driver is set and returns it
+     * @return mixed
+     */
+    private function call() {
+
+        if(null === $this -> driver) {
+            return trigger_error('Driver is not set. Set the driver with the setDriver() method', E_USER_ERROR);
+        }
+
+        if(null === $this -> driverInstance) {
+        	$this -> driverInstance = new $this -> driver();
+        }
+
+        return $this -> driverInstance;
+    }
 }
 ?>

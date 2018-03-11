@@ -12,8 +12,8 @@ namespace sFire\Validator\Form\Rules;
 
 use sFire\Validator\RuleInterface;
 use sFire\Validator\MatchRule;
-use sFire\Validator\Rules\Ipv4;
-use sFire\Validator\Rules\Ipv6;
+use sFire\Validator\Form\Rules\Ipv4;
+use sFire\Validator\Form\Rules\Ipv6;
 
 class Ip {
 
@@ -34,11 +34,37 @@ class Ip {
 	 */
 	public function isValid() {
 		
+		$value = $this -> getValue();
+
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	private function check($value) {
+
 		$ipv4 = new Ipv4();
-		$ipv4 -> setData($this -> getValue());
+		$ipv4 -> setValue($value);
 
 		$ipv6 = new Ipv6();
-		$ipv6 -> setData($this -> getValue());
+		$ipv6 -> setValue($value);
 
 		return true === $ipv4 -> isValid() || $ipv6 -> isValid();
 	}

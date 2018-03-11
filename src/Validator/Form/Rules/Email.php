@@ -34,6 +34,30 @@ class Email implements RuleInterface {
 
 		$value = $this -> getValue();
 
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	private function check($value) {
+
 		if(true === is_string($value)) {
 			return false !== filter_var(trim($value), \FILTER_VALIDATE_EMAIL);
 		}

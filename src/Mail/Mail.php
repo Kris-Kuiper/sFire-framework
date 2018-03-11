@@ -80,13 +80,7 @@ Final class Mail implements MailInterface {
 				$viewmodel = new ViewModel($view, false);
 				$viewmodel -> assign($this -> variables);
 
-				$template  = new Template($viewmodel);
-				
-				$template -> setDirectory(Path :: get('cache-template'));
-				$template -> render();
-				
-				$file = $template -> getFile() -> entity() -> getBasepath();
-				$this -> message[$type] = $viewmodel -> getView() -> process($file) -> getOutput();
+				$this -> message[$type] = $viewmodel -> render();
 			}
 		}
 

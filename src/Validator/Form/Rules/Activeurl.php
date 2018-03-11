@@ -33,15 +33,39 @@ class Activeurl implements RuleInterface {
 	public function isValid() {
  		
  		$value = $this -> getValue();
- 		
- 		if(is_string($value)) {
 
-	 		$value = preg_replace('/^([a-z]+):\/\//i', '', $value);
+ 		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
 
-			return true === (gethostbyname($value) && checkdnsrr($value, 'A'));
+				if(false === $this -> check($val)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value);
 		}
 
-		return false;
+		return true;
+	}
+
+	
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	private function check($value) {
+
+		if(true === is_string($value)) {
+
+ 			$value = preg_replace('/^([a-z]+):\/\//i', '', $value);
+
+ 			return true === (gethostbyname($value) && checkdnsrr($value, 'A'));
+ 		}
+
+ 		return false;
 	}
 }
 ?>

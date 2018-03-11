@@ -34,7 +34,31 @@ class Json implements RuleInterface {
 		
 		$value = $this -> getValue();
 
-		if(is_string($value)) {
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	private function check($value) {
+
+		if(true === is_string($value)) {
 			
 			@json_decode($value);
 

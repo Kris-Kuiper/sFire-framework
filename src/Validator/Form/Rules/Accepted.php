@@ -31,7 +31,40 @@ class Accepted implements RuleInterface {
 	 * @return boolean
 	 */
 	public function isValid() {
- 		return true === in_array($this -> getValue(), ['yes', 'on', '1', 'true']);
+
+		$value = $this -> getValue();
+
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	private function check($value) {
+
+		$values = ['yes', 'on', '1', 'true'];
+		
+		if(true === is_string($value)) {
+			return true === in_array($value, $values);
+		}
+
+		return false;
 	}
 }
 ?>

@@ -36,11 +36,14 @@ final class APCu implements CacheInterface {
 	 */
 	public function set($key, $value, $expiration = 300) {
 
-		if(false === ('-' . intval($expiration) == '-' . $expiration)) {
-			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($expiration)), E_USER_ERROR);
-		}
+		if(false === is_string($key) && false === is_array($key)) {
+   			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or array, "%s" given', __METHOD__, gettype($key)), E_USER_ERROR);
+   		}
 
-
+   		if(0 === strlen($key)) {
+   			return trigger_error(sprintf('Argument 1 passed to %s() may not be an empty string', __METHOD__), E_USER_ERROR);
+   		}
+   		
 		$this -> expire($key);
 		apcu_add($key, $value, $expiration);
 
@@ -81,6 +84,14 @@ final class APCu implements CacheInterface {
 	 */
 	public function expire($key) {
 
+		if(false === is_string($key) && false === is_array($key)) {
+   			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or array, "%s" given', __METHOD__, gettype($key)), E_USER_ERROR);
+   		}
+
+   		if(0 === strlen($key)) {
+   			return trigger_error(sprintf('Argument 1 passed to %s() may not be an empty string', __METHOD__), E_USER_ERROR);
+   		}
+
 		apcu_delete($key);
 		return $this;
 	}
@@ -105,26 +116,29 @@ final class APCu implements CacheInterface {
 	 */
 	public function touch($key, $expiration = null) {
 
-		if(null !== $expiration && false === ('-' . intval($expiration) == '-' . $expiration)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($expiration)), E_USER_ERROR);
-		}
+		if(false === is_string($key) && false === is_array($key)) {
+   			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or array, "%s" given', __METHOD__, gettype($key)), E_USER_ERROR);
+   		}
+
+   		if(0 === strlen($key)) {
+   			return trigger_error(sprintf('Argument 1 passed to %s() may not be an empty string', __METHOD__), E_USER_ERROR);
+   		}
 
 		if(true === $this -> exists($key)) {
 
-			$info = apcu_cache_info($key);
+			$info = apcu_cache_info();
 
 			if(true === is_array($info) && true === isset($info['cache_list'])) {
 
 				foreach($info['cache_list'] as $index) {
 
-					if(true === isset($index['key'], $index['ttl']) && $index['key'] === $key) {
+					if(true === isset($index['info'], $index['ttl']) && $index['info'] === $key) {
 
 						$data 		= $this -> get($key);
-						$expiration = $index['ttl'] + 1;
+						$expiration = $index['ttl'];
 
 						$this -> expire($key);
 						$this -> set($key, $data, $expiration);
-
 						break;
 					}
 				}
@@ -141,6 +155,15 @@ final class APCu implements CacheInterface {
 	 * @return boolean
 	 */
 	public function exists($key) {
+
+		if(false === is_string($key) && false === is_array($key)) {
+   			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or array, "%s" given', __METHOD__, gettype($key)), E_USER_ERROR);
+   		}
+
+   		if(0 === strlen($key)) {
+   			return trigger_error(sprintf('Argument 1 passed to %s() may not be an empty string', __METHOD__), E_USER_ERROR);
+   		}
+
 		return apcu_exists($key);
 	}
 }

@@ -31,7 +31,33 @@ class Present implements RuleInterface {
 	 * @return boolean
 	 */
 	public function isValid() {
-		return null !== $this -> getValue();
+		
+		$value 	= $this -> getValue();
+
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	private function check($value) {
+		return null !== $value;
 	}
 }
 ?>

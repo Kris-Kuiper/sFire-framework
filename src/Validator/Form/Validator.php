@@ -34,6 +34,12 @@ class Validator {
 
 
 	/**
+	 * @var array $validateAsArray
+	 */
+	private $validateAsArray = [];
+
+
+	/**
 	 * Constructor
 	 * @param array $data
 	 * @param string $prefix
@@ -87,6 +93,29 @@ class Validator {
 		}
 
 		return $instance;
+	}
+
+
+	/**
+	 * Set a rule that a field value must be an array and all array items will be validated individual
+	 * @param boolean|null $bool
+	 * @return sFire\Validator
+	 */
+	public function validateAsArray($bool = null) {
+
+		if(false === is_bool($bool) && null !== $bool) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($bool)), E_USER_ERROR);
+		}
+
+		if(null === $bool) {
+			$bool = true;
+		}
+
+		foreach($this -> getFieldnames() as $field) {
+			$this -> validateAsArray[$field] = $bool;
+		}
+
+		return $this;
 	}
 
 
@@ -188,6 +217,7 @@ class Validator {
 				$class -> setValue($value);
 				$class -> setPrefix($rule -> prefix);
 				$class -> setParameters($rule -> parameters);
+				$class -> setValidateAsArray($this -> isValidateArray($rule -> field));
 
 				if(true === is_callable([$class, 'requestParameters'])) {
 					
@@ -237,9 +267,40 @@ class Validator {
 		
 		if(true === isset($this -> required[$field])) {
 			
-			if(false === $this -> required[$field] && trim($value) === '') {
+			$empty = true;
+
+			if(true === is_array($value)) {
+
+				foreach($value as $val) {
+
+					if(strlen(trim($val)) > 0) {
+						$empty = false;
+					}
+				}
+			}
+
+			if(true === is_string($value) && strlen(trim($value)) > 0) {
+				$empty = false;
+			}
+
+			if(false === $this -> required[$field] && $empty) {
 			    return true;
 			}
+		}
+
+		return false;
+	}
+
+
+	/**
+     * Evaluates if field value should be validated as an array
+     * @param $field string
+     * @return boolean
+     */
+	private function isValidateArray($field) {
+		
+		if(true === isset($this -> validateAsArray[$field])) {
+			return $this -> validateAsArray[$field];
 		}
 
 		return false;

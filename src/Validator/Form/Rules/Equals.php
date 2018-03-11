@@ -39,7 +39,7 @@ class Equals implements RuleInterface {
 	public function isValid() {
 		
 		$params = $this -> getParameters();
-		$data 	= $this -> getValue();
+		$value 	= $this -> getValue();
 		
 		if(false === isset($params[0])) {
 			return trigger_error(sprintf('Missing argument 1 for %s', __METHOD__), E_USER_ERROR);
@@ -49,7 +49,31 @@ class Equals implements RuleInterface {
 			$this -> strict = $params[1];
 		}
 
-		return true === ($this -> strict === true ? ($data === $params[0]) : ($data == $params[0]));
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val, $params)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value, $params);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @param array $params
+	 * @return boolean
+	 */
+	private function check($value, $params) {
+		return true === ($this -> strict === true ? ($value === $params[0]) : ($value == $params[0]));
 	}
 }
 ?>

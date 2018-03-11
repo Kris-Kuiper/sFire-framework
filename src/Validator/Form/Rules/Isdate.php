@@ -25,12 +25,13 @@ class Isdate implements RuleInterface {
 	}
 
 	
+
 	/**
 	 * Check if rule passes
 	 * @return boolean
 	 */
 	public function isValid() {
-		
+
 		$params = $this -> getParameters();
 		$value 	= $this -> getValue();
 
@@ -42,9 +43,33 @@ class Isdate implements RuleInterface {
 			return trigger_error(sprintf('Missing argument 1 for %s', __METHOD__), E_USER_ERROR);
 		}
 
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	private function check($value) {
+		
 		$timestamp = strtotime($value);
 
-		if(is_int($timestamp)) {
+		if(true === is_int($timestamp)) {
 			return true === (date($params[0], $timestamp) == $value);
 		}
 

@@ -31,7 +31,38 @@ class Isnumeric implements RuleInterface {
 	 * @return boolean
 	 */
 	public function isValid() {
- 		return is_numeric($this -> getValue());
+		
+		$params = $this -> getParameters();
+		$value 	= $this -> getValue();
+
+		if(true === isset($params[0]) && true === is_bool($params[0])) {
+			$this -> strict = $params[0];
+		}
+
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value);
+		}
+
+		return true;
+	}
+	
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	private function check($value) {
+		return true === is_numeric($value);
 	}
 }
 ?>

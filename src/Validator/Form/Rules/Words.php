@@ -43,6 +43,31 @@ class Words implements RuleInterface {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($params[0])), E_USER_ERROR);
 		}
 
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val, $params)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value, $params);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @param mixed $params
+	 * @return boolean
+	 */
+	private function check($value, $params) {
+
 		if(true === is_string($value)) {
 
 			if('' === trim($value) && intval($params[0]) === 0) {

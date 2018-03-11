@@ -32,8 +32,8 @@ class Regex implements RuleInterface {
 	 */
 	public function isValid() {
 		
-		$data = $this -> getValue();
 		$params = $this -> getParameters();
+		$value 	= $this -> getValue();
 
 		if(false === isset($params[0])) {
 			return trigger_error(sprintf('Missing argument 1 for %s', __METHOD__), E_USER_ERROR);
@@ -43,8 +43,33 @@ class Regex implements RuleInterface {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($params[0])), E_USER_ERROR);
 		}
 
-		if(true === is_string($data)) {
-			return false === in_array(preg_match($params[0], $data), [false, 0]);
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val, $params)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value, $params);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @param array $params
+	 * @return boolean
+	 */
+	private function check($value, $params) {
+
+		if(true === is_string($value) || is_numeric($value)) {
+			return false === in_array(preg_match($params[0], $value), [false, 0]);
 		}
 
 		return false;

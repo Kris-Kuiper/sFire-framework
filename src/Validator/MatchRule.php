@@ -56,6 +56,12 @@ trait MatchRule {
 
 
     /**
+     * @var boolean $validateAsArray
+     */
+    private $validateAsArray = false;
+
+
+    /**
      * Returns value
      * @return array
      */
@@ -147,6 +153,15 @@ trait MatchRule {
 
 
     /**
+     * Sets validateAsArray
+     * @return boolean
+     */
+    public function getValidateAsArray() {
+        return $this -> validateAsArray;
+    }
+
+
+    /**
      * Sets field
      * @param array $field
      */
@@ -180,6 +195,15 @@ trait MatchRule {
      */
     public function setMessage($message) {
         $this -> message = $message;
+    }
+
+
+    /**
+     * Sets validateAsArray
+     * @param boolean $bool
+     */
+    public function setValidateAsArray($bool) {
+        $this -> validateAsArray = $bool;
     }
 
 

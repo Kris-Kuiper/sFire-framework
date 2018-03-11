@@ -15,6 +15,7 @@ use sFire\MVC\ViewContainer;
 use sFire\MVC\View;
 use sFire\HTTP\Response;
 use sFire\Application\Application;
+use sFire\Template\Template;
 
 class ViewModel {
 	
@@ -159,6 +160,22 @@ class ViewModel {
 	public function getView() {
 		return $this -> view;
 	}
+
+
+
+	public function render() {
+
+		$template = new Template($this);
+		
+		$template -> setDirectory(Path :: get('cache-template'));
+		$template -> render();
+		
+		$file = $template -> getFile() -> entity() -> getBasepath();
+		
+		return $this -> getView() -> process($file) -> getOutput();
+	}
+
+
 
 	
 	/**

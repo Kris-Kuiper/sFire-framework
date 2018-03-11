@@ -32,10 +32,34 @@ class Alpha implements RuleInterface {
 	 */
 	public function isValid() {
 		
-		$data = $this -> getValue();
+		$value = $this -> getValue();
 
-		if(true === is_string($data)) {
-			return !in_array(preg_match('/^[a-z]+$/i', $data), [false, 0]);
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	private function check($value) {
+
+		if(true === is_string($value)) {
+			return !in_array(preg_match('/^[a-z]+$/i', $value), [false, 0]);
 		}
 
 		return false;

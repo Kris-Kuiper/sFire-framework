@@ -16,8 +16,7 @@ final class Hash {
 	const METHOD   			= 'AES-256-CBC';
     const ENCODING  		= '8bit';
     const ALGORITHM 		= 'SHA256';
-    const HASH_ALGORITHM 	= PASSWORD_BCRYPT;
-    const HASH_COSTS		= 12;
+    const HASH_ALGORITHM 	= 'sha256';
 
 	use HashTrait;
 }

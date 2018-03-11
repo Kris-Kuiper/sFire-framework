@@ -70,7 +70,7 @@ trait HashTrait {
             return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or number, "%s" given', __METHOD__, gettype($data)), E_USER_ERROR);
         }
 
-        return password_hash($data, self :: HASH_ALGORITHM, ['costs' => self :: HASH_COSTS]);
+        return hash(self :: HASH_ALGORITHM, $data);
     }
 
 
@@ -90,7 +90,7 @@ trait HashTrait {
             return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($hash)), E_USER_ERROR);
         }
 
-        return true === password_verify($data, $hash);
+        return hash(self :: HASH_ALGORITHM, $data) === $hash;
     }
 
 

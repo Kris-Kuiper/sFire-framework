@@ -34,6 +34,30 @@ class Url implements RuleInterface {
 
 		$value = $this -> getValue();
 
+		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
+			
+			foreach($value as $val) {
+
+				if(false === $this -> check($val)) {
+					return false;
+				}
+			}
+		}
+		else {
+			return $this -> check($value);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Check if rule passes
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	private function check($value) {
+
 		if(is_string($value)) {
  			return filter_var($value, \FILTER_VALIDATE_URL) !== false;
  		}
