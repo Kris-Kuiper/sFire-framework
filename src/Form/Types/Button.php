@@ -11,6 +11,7 @@ namespace sFire\Form\Types;
 
 use sFire\Form\Traits\FormTrait;
 use sFire\HTTP\Request;
+use sFire\Escaper\Escape;
 
 class Button {
 
@@ -51,7 +52,7 @@ class Button {
     		$html = '<input type="'. $this -> type .'"';
     		
     		foreach($this -> attributes as $attribute => $value) {
-    		    $html .= ' ' . $attribute . '="'. @htmlentities($value) .'"';
+    		    $html .= ' ' . $attribute . '="'. Escape :: attr($value) .'"';
     		}
 
     		$html .= '>';
@@ -64,10 +65,10 @@ class Button {
         $html = '<button';
         
         foreach($this -> attributes as $attribute => $value) {
-            $html .= ' ' . $attribute . '="'. @htmlentities($value) .'"';
+            $html .= ' ' . $attribute . '="'. Escape :: attr($value) .'"';
         }
 
-        $html .= '>' . @htmlentities($this -> text) . '</button>';
+        $html .= '>' . Escape :: html($this -> text) . '</button>';
 
         return $html;
         

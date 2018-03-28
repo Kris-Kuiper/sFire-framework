@@ -15,6 +15,7 @@ use sFire\Template\Match\MatchHelper;
 use sFire\Template\Match\MatchFails;
 use sFire\Template\Match\MatchPasses;
 use sFire\Template\Match\MatchRouter;
+use sFire\Template\Match\MatchEscape;
 use sFire\Template\TemplateData;
 use sFire\Template\Template;
 
@@ -51,6 +52,9 @@ class MatchEcho {
 				$match 	= new MatchTranslation($this -> match[2][$index], true);
 				$output = $match -> replace() -> getLine();
 
+				$match 	= new MatchEscape($output, true);
+				$output = $match -> replace() -> getLine();
+
 				$match 	= new MatchRouter($output, true);
 				$output = $match -> replace() -> getLine();
 
@@ -78,7 +82,7 @@ class MatchEcho {
 					$code = $output;
 				}
 				else {
-					$code 	= 'htmlentities('. $output .')';
+					$code = '$this -> escapeHtml('. $output .')';
 				}
 
 				$code = false === $this -> getInline() ? '<?php echo ' . $code . '; ?>' : $code;

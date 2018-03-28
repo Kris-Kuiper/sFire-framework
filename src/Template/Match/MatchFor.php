@@ -15,6 +15,7 @@ use sFire\Template\Match\MatchHelper;
 use sFire\Template\Match\MatchFails;
 use sFire\Template\Match\MatchPasses;
 use sFire\Template\Match\MatchRouter;
+use sFire\Template\Match\MatchEscape;
 use sFire\Template\TemplateData;
 use sFire\Template\Template;
 
@@ -53,6 +54,9 @@ class MatchFor {
 				}
 
 				$match 	= new MatchTranslation($this -> match[1][$index], true);
+				$output = $match -> replace() -> getLine();
+
+				$match 	= new MatchEscape($output, true);
 				$output = $match -> replace() -> getLine();
 
 				$match 	= new MatchRouter($output, true);

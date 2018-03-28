@@ -15,11 +15,10 @@ use sFire\Template\Match\MatchHelper;
 use sFire\Template\Match\MatchFails;
 use sFire\Template\Match\MatchPasses;
 use sFire\Template\Match\MatchRouter;
-use sFire\Template\Match\MatchEscape;
 use sFire\Template\TemplateData;
 use sFire\Template\Template;
 
-class MatchTranslation {
+class MatchEscape {
 
 	use MatchTrait;
 
@@ -33,7 +32,7 @@ class MatchTranslation {
 		$this -> setLine($line);
 		$this -> setInline($inline);
 
-		if(preg_match_all('#@translate(\((((?>[^()]+)|(?1))*)\))#is', $this -> line, $matches)) {
+		if(preg_match_all('#@escape(\((((?>[^()]+)|(?1))*)\))#is', $this -> line, $matches)) {
 			$this -> setMatch($matches);
 		}
 	}
@@ -50,9 +49,6 @@ class MatchTranslation {
 			foreach($this -> match[0] as $index => $match) {
 
 				$match 	= new MatchTranslation($this -> match[2][$index], true);
-				$output = $match -> replace() -> getLine();
-
-				$match 	= new MatchEscape($output, true);
 				$output = $match -> replace() -> getLine();
 
 				$match 	= new MatchRouter($output, true);
@@ -78,7 +74,7 @@ class MatchTranslation {
 				$match 	= new MatchVariable($output);
 				$output = $match -> replace() -> getLine();
 				
-				$code 	= '$this -> translate('. $output .')';
+				$code 	= '$this -> escape('. $output .')';
 				$code 	= false === $this -> getInline() ? '<?php echo ' . $code . '; ?>' : $code;
 
 				$this -> line = preg_replace('/' . preg_quote($this -> match[0][$index], '/') . '/', $code, $this -> line , 1);

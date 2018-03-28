@@ -12,6 +12,7 @@ namespace sFire\Form\Types;
 use sFire\Form\Traits\FormTrait;
 use sFire\HTTP\Request;
 use sFire\Number\Number;
+use sFire\Escaper\Escape;
 
 class Selectrange {
 
@@ -102,7 +103,7 @@ class Selectrange {
         foreach($this -> attributes as $attribute => $value) {
 
             if('value' !== $attribute) {
-                $html .= ' ' . $attribute . '="'. @htmlentities($value) .'"';
+                $html .= ' ' . $attribute . '="'. Escape :: attr($value) .'"';
             }
         }
 
@@ -134,13 +135,13 @@ class Selectrange {
 
             $number -> set($key) -> toFixed($this -> round);
 
-            $html .= '<option value="'. @htmlentities($key) .'"';
+            $html .= '<option value="'. Escape :: attr($key) .'"';
 
             if((string) $key == $selected) {
                 $html .= ' selected="selected"';
             }
 
-            $html .= '>'. @htmlentities($number -> get()) .'</option>';              
+            $html .= '>'. Escape :: html($number -> get()) .'</option>';              
         }
         
         $html .= '</select>';

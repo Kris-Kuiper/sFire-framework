@@ -10,6 +10,7 @@
 namespace sFire\Form\Types;
 
 use sFire\Form\Traits\FormTrait;
+use sFire\Escaper\Escape;
 
 class Textarea {
 
@@ -30,14 +31,14 @@ class Textarea {
     	foreach($this -> attributes as $attribute => $value) {
 
             if('value' !== $attribute) {
-                $html .= ' ' . $attribute . '="'. @htmlentities($value) .'"';
+                $html .= ' ' . $attribute . '="'. Escape :: attr($value) .'"';
             }
     	}
 
     	$html .= '>';
 
         if(true === isset($this -> attributes['value'])) {
-            $html .= @htmlentities($this -> attributes['value']);
+            $html .= Escape :: attr($this -> attributes['value']);
         }
 
         $html .= '</textarea>';

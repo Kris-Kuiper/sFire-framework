@@ -16,6 +16,7 @@ use sFire\Translation\Translation;
 use sFire\Form\Form;
 use sFire\Template\TemplateData;
 use sFire\Application\Application;
+use sFire\Escaper\Escape;
 
 class View {
 	
@@ -87,6 +88,105 @@ class View {
 	 */
 	public function getOutput() {
 		return $this -> output;
+	}
+
+
+	/**
+	 * Escapes HTML
+	 * @param string $string
+	 * @return string
+	 */
+	public function escapeHtml($string, $encoding = 'utf-8') {
+		
+		$current = Escape :: getEncoding();
+		Escape :: setEncoding($encoding);
+		$result =  Escape :: html($string);
+		Escape :: setEncoding($current);
+
+		return $result;
+	}
+
+
+	/**
+	 * Escapes HTML attribute
+	 * @param string $string
+	 * @return string
+	 */
+	public function escapeAttr($string, $encoding = 'utf-8') {
+		
+		$current = Escape :: getEncoding();
+		Escape :: setEncoding($encoding);
+		$result =  Escape :: attr($string);
+		Escape :: setEncoding($current);
+
+		return $result;
+	}
+
+
+	/**
+     * Escape a string for the Javascript context.
+     * @param string $string
+     * @return string
+     */
+	public function escapeJs($string, $encoding = 'utf-8') {
+		
+		$current = Escape :: getEncoding();
+		Escape :: setEncoding($encoding);
+		$result =  Escape :: js($string);
+		Escape :: setEncoding($current);
+
+		return $result;
+	}
+
+	
+	/**
+     * Escape a string for the CSS context.
+     * @param string $string
+     * @return string
+     */	
+	public function escapeCss($string, $encoding = 'utf-8') {
+		
+		$current = Escape :: getEncoding();
+		Escape :: setEncoding($encoding);
+		$result =  Escape :: css($string);
+		Escape :: setEncoding($current);
+
+		return $result;
+	}
+
+
+	/**
+     * Escape a string for the URI or Parameter contexts. This should not be used to escape an entire URI - only a subcomponent being inserted.
+     * @param string $string
+     * @return string
+     */
+	public function escapeUrl($string, $encoding = 'utf-8') {
+		
+		$current = Escape :: getEncoding();
+		Escape :: setEncoding($encoding);
+		$result =  Escape :: url($string);
+		Escape :: setEncoding($current);
+
+		return $result;
+	}
+
+
+	/**
+     * Escape a string with a given type (url, css, js, attr or html)
+     * @param string $string
+     * @return string
+     */
+	public function escape($string, $type = 'html', $encoding = 'utf-8') {
+
+		switch($type) {
+
+			case 'url'  : return $this -> escapeUrl($string, $encoding); break;
+			case 'css'  : return $this -> escapeCss($string, $encoding); break;
+			case 'js'   : return $this -> escapeJs($string, $encoding); break;
+			case 'attr' : return $this -> escapeAttr($string, $encoding); break;
+			
+			default : return $this -> escapeHtml($string, $encoding); break;
+		}
 	}
 
 

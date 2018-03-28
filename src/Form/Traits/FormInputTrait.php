@@ -9,6 +9,8 @@
  
 namespace sFire\Form\Traits;
 
+use sFire\Escaper\Escape;
+
 trait FormInputTrait {
 
 	/**
@@ -22,7 +24,7 @@ trait FormInputTrait {
         $html = '<input type="'. $this -> type .'"';
         
         foreach($this -> attributes as $attribute => $value) {
-            $html .= ' ' . $attribute . '="'. @htmlentities($value) .'"';
+            $html .= ' ' . $attribute . '="'. Escape :: attr($value) .'"';
         }
 
         $html .= '>';

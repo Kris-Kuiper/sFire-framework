@@ -10,6 +10,7 @@
 namespace sFire\Form\Traits;
 
 use sFire\HTTP\Request;
+use sFire\Escaper\Escape;
 
 trait FormCheckedTrait {
 
@@ -36,7 +37,7 @@ trait FormCheckedTrait {
         $html = '<input type="'. $this -> type .'"';
         
         foreach($this -> attributes as $attribute => $value) {
-            $html .= ' ' . $attribute . '="'. @htmlentities($value) .'"';
+            $html .= ' ' . $attribute . '="'. Escape :: attr($value) .'"';
         }
 
         $html .= '>';

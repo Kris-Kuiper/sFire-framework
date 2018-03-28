@@ -170,6 +170,7 @@ class Template {
 			'MatchEndNotEmpty',
 			'MatchForm',
 			'MatchTranslation',
+			'MatchEscape',
 			'MatchRouter',
 			'MatchHelper',
 			'MatchPartial',

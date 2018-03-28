@@ -19,6 +19,14 @@ class Isboolean implements RuleInterface {
 
 
 	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this -> setMessage('Should be a boolean');
+	}
+
+
+	/**
 	 * Check if rule passes
 	 * @return boolean
 	 */

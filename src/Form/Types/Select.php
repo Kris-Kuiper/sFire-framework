@@ -11,6 +11,7 @@ namespace sFire\Form\Types;
 
 use sFire\Form\Traits\FormTrait;
 use sFire\HTTP\Request;
+use sFire\Escaper\Escape;
 
 class Select {
 
@@ -65,7 +66,7 @@ class Select {
         foreach($this -> attributes as $attribute => $value) {
 
             if('value' !== $attribute) {
-                $html .= ' ' . $attribute . '="'. @htmlentities($value) .'"';
+                $html .= ' ' . $attribute . '="'. Escape :: attr($value) .'"';
             }
         }
 
@@ -76,30 +77,30 @@ class Select {
 
             if(true === is_array($value)) {
 
-                $html .= '<optgroup label="'. @htmlentities($key) .'">';
+                $html .= '<optgroup label="'. Escape :: attr($key) .'">';
 
                     foreach($value as $key => $value) {
 
-                        $html .= '<option value="'. @htmlentities($key) .'"';
+                        $html .= '<option value="'. Escape :: attr($key) .'"';
 
                             if($key === $selected) {
                                 $html .= ' selected="selected"';
                             }
 
-                        $html .= '>'. @htmlentities($value) .'</option>';
+                        $html .= '>'. Escape :: html($value) .'</option>';
                     }
 
                 $html .= '</optgroup>';
             }
             else {
 
-                $html .= '<option value="'. @htmlentities($key) .'"';
+                $html .= '<option value="'. Escape :: attr($key) .'"';
 
                     if($key === $selected) {
                         $html .= ' selected="selected"';
                     }
 
-                $html .= '>'. @htmlentities($value) .'</option>';
+                $html .= '>'. Escape :: html($value) .'</option>';
             }
         }
         

@@ -24,7 +24,6 @@ class Isdate implements RuleInterface {
 		$this -> setMessage('Must be a valid date');
 	}
 
-	
 
 	/**
 	 * Check if rule passes
