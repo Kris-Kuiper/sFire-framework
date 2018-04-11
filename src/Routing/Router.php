@@ -259,14 +259,14 @@ final class Router {
 				if(true === isset($data[$index])) {
 
 					if(false === is_string($data[$index]) && false === is_numeric($data[$index])) {
-						return trigger_error(sprintf('Router url width id "%s" expects parameters to be a String', $method -> getIdentifier()));
+						return trigger_error(sprintf('Router url width id "%s" expects parameters to be a String', $route -> getIdentifier()));
 					}
 
 					if(preg_match('#' . $replace . '#i', $data[$index])) {
 						$url = preg_replace('#'. preg_quote($match) .'#i', $data[$index], $url, 1);
 					}
 					else {
-						return trigger_error(sprintf('Parameters given to router url width id "%s" do not match. Trying to match regular expression pattern "%s" with "%s" as subject', $method -> getIdentifier(), $replace, $data[$index]));
+						return trigger_error(sprintf('Parameters given to router url width id "%s" do not match. Trying to match regular expression pattern "%s" with "%s" as subject', $route -> getIdentifier(), $replace, $data[$index]));
 					}
 				}
 				elseif('' !== $optional) {

@@ -14,10 +14,51 @@ use sFire\Utils\StringToArray;
 final class Request {
 
 
+	const EMPTY_STRING_TO_NULL = 1;
+	const EMPTY_ARRAY_TO_NULL = 2;
+	const TRIM_STRING = 3;
+
+
 	/**
 	 * @var array $method
 	 */
 	private static $method = [];
+
+
+	/**
+	 * @var array $options
+	 */
+	private static $options = [];
+
+
+	/**
+	 * Enable options
+	 * @param integer $option
+	 */
+	public static function enable($option) {
+
+		if(false === is_int($option)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($option)), E_USER_ERROR);
+		}
+		
+		static :: $options[$option] = true;
+	}
+
+
+	/**
+	 * Disable options
+	 * @param integer $option
+	 */
+	public static function disable($option) {
+
+		if(false === is_int($option)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($option)), E_USER_ERROR);
+		}
+		
+		if(true === isset(static :: $options[$option])) {
+			unset(static :: $options[$option]);
+		}
+	}
 
 
     /**
@@ -611,8 +652,32 @@ final class Request {
 
 			if(static :: isMethod(static :: $method['method'])) {
 
-				$helper = new StringToArray();
-				$data = $helper -> execute($key, $default, static :: $method['data']);
+				$helper  = new StringToArray();
+				$data 	 = $helper -> execute($key, $default, static :: $method['data']);
+
+				//Trim string
+				if(true === isset(static :: $options[self :: TRIM_STRING])) {
+
+					if(is_string($data) === 0) {
+						$data = trim($data);
+					}
+				}
+
+				//Convert empty string to NULL
+				if(true === isset(static :: $options[self :: EMPTY_STRING_TO_NULL])) {
+
+					if(is_string($data) && strlen($data) === 0) {
+						$data = null;
+					}
+				}
+
+				//Convert empty array to NULL
+				if(true === isset(static :: $options[self :: EMPTY_ARRAY_TO_NULL])) {
+
+					if(is_array($data) && count($data) === 0) {
+						$data = null;
+					}
+				}
 
 				$default = null === $data ? $default : $data;
 			}
@@ -668,7 +733,15 @@ final class Request {
 		preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
 
 		if(0 === count($matches)) {
-			
+
+			$json = @json_decode($input, true);
+
+			if(true === (json_last_error() == JSON_ERROR_NONE)) {
+
+				$data = $json;
+				return $json;
+			}
+
 			parse_str(urldecode($input), $data);
 			return $data;
 		}
