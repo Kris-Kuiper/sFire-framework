@@ -202,6 +202,15 @@ final class Client {
 
 
 	/**
+	 * Returns the body in JSON format (if response is valid JSON)
+	 * @return string
+	 */
+	public function getJson() {
+		return $this -> response -> getJson();
+	}
+
+
+	/**
 	 * Returns the headers of the response
 	 * @return array
 	 */
@@ -589,21 +598,40 @@ final class Client {
 	 */
 	public function send() {
 
+		//Set default status
+		$this -> response -> setStatus([
+
+			'code' 		=> 0,
+		    'protocol' 	=> '',
+		    'status' 	=> '',
+		    'text' 		=> ''
+		]);
+
 		$curl = curl_init();
 
 		curl_setopt_array($curl, $this -> createOptions());
 
-		$response 	 = curl_exec($curl);
-		$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-		$headers 	 = substr($response, 0, $header_size);
-		$headers 	 = $this -> parseHeaders($headers);
-		$body 		 = substr($response, $header_size);
+		$response = curl_exec($curl);
 
-		$this -> response -> setHeaders($headers['headers']);
-		$this -> response -> setStatus($headers['status']);
-		$this -> response -> setCookies($this -> ParseCookies($response));
-		$this -> response -> setbody($body);
-		$this -> response -> setResponse($response);
+		if(false !== $response) {
+
+			$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+			$headers 	 = substr($response, 0, $header_size);
+			$headers 	 = $this -> parseHeaders($headers);
+			$body 		 = substr($response, $header_size);
+			$json 		 = @json_decode($body, true);
+
+			$this -> response -> setHeaders($headers['headers']);
+			$this -> response -> setBody($body);
+			$this -> response -> setStatus($headers['status']);
+			$this -> response -> setCookies($this -> parseCookies($response));
+			$this -> response -> setResponse($response);
+
+			if(true === (json_last_error() == JSON_ERROR_NONE)) {
+				$this -> response -> setJson($json);
+			}
+		}
+
 		$this -> response -> setInfo(curl_getinfo($curl));
 
 		curl_close($curl);

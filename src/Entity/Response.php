@@ -33,6 +33,12 @@ final class Response extends Entity {
 
 
 	/**
+	 * @var string $json
+	 */
+	private $json;
+
+
+	/**
 	 * @var array $cookies
 	 */
 	private $cookies = [];
@@ -99,6 +105,18 @@ final class Response extends Entity {
 
 
 	/**
+	 * Set JSON
+	 * @param string $json
+	 * @return sFire\Entity\Client
+	 */		
+	public function setJson($json) {
+		
+		$this -> json = $json;
+		return $this;
+	}
+
+
+	/**
 	 * Set info
 	 * @param string $info
 	 * @return sFire\Entity\Client
@@ -128,6 +146,15 @@ final class Response extends Entity {
 	*/	
 	public function getBody() {
 		return $this -> body;
+	}
+
+
+	/**
+	 * Return json
+	* @return string
+	*/	
+	public function getJson() {
+		return $this -> json;
 	}
 
 	
