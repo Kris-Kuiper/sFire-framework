@@ -58,6 +58,12 @@ final class Router {
 
 
 	/**
+	 * @var integer $redirected
+	 */
+	private static $redirected = 0;
+
+
+	/**
 	 * @var array $error
 	 */
 	private static $error = [
@@ -330,10 +336,13 @@ final class Router {
 
 			$domains = $route -> getDomain();
 
-			foreach($domains as $url) {
+			if(true === is_array($domains)) {
 
-				if(preg_match('#'. str_replace('#', '\#', $url) .'#', $domain) || $url === $domain) {
-					return true;
+				foreach($domains as $url) {
+
+					if(preg_match('#'. str_replace('#', '\#', $url) .'#', $domain) || $url === $domain) {
+						return true;
+					}
 				}
 			}
 		}
@@ -528,17 +537,22 @@ final class Router {
 
 		if($uri = Request :: getUri()) {
 
-			$url = '';
+			$url  = '';
+			$host = null;
 
 			if(!($scheme = Request :: getScheme())) {
 				
 				$scheme = 'php';
+				$host   = '127.0.0.1';
 				Request :: setScheme($scheme);
 			}
 
 			$url .= $scheme . '://';
 
-			if($host = Request :: getHost()) {
+			if($hostname = Request :: getHost()) {
+				$url .= $hostname;
+			}
+			elseif(null !== $host) {
 				$url .= $host;
 			}
 
@@ -696,6 +710,14 @@ final class Router {
 				}
 			}
 		}
+
+		//Prevent to many redirects
+		if(static :: $redirected > 50) {
+			return trigger_error('Prevented to many redirects. This usually happens when there are no routes to match and the 404 will trigger the same 404 in a loop.', E_USER_ERROR);
+		}
+
+		//Update redirected
+		static :: $redirected++;
 
 		//Trigger 404 if route exists
 		if(true === $found && $route = static :: $error['default'][404]) {
