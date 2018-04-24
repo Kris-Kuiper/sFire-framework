@@ -64,6 +64,12 @@ final class Router {
 
 
 	/**
+	 * @var boolean $isRedirect
+	 */
+	private static $isRedirect = false;
+
+
+	/**
 	 * @var array $error
 	 */
 	private static $error = [
@@ -511,6 +517,29 @@ final class Router {
 
 
 	/**
+	 * Set the redirect
+	 * @param boolean $redirect
+	 */
+	public static function setRedirect($bool) {
+
+		if(null !== $bool && false === is_bool($bool)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($bool)), E_USER_ERROR);
+		}
+
+		static :: $isRedirect = $bool;
+	}
+
+
+	/**
+	 * Returns if route is internal redirect
+	 * @return boolean
+	 */
+	private static function getRedirect() {
+		return static :: $isRedirect;
+	}
+
+
+	/**
 	 * Recursive merge arrays
 	 * @param array $array1
 	 * @param array $array2
@@ -699,7 +728,7 @@ final class Router {
 						static :: setParams($match);
 
 						//Check if route is viewable
-						if(true === $route -> isViewable() || null === $route -> getViewable()) {
+						if(true === $route -> isViewable() || null === $route -> getViewable() || true === static :: getRedirect()) {
 							
 							new MVC($route, $match);
 							return true;

@@ -198,6 +198,8 @@ class Redirect {
 		$this -> setUrl();
 		$this -> setDomain();
 		$this -> setMethod($method);
+		
+		Router :: setRedirect(true);
 
 		return Router :: execute();
 	}
