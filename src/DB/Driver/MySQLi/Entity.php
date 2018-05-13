@@ -53,6 +53,12 @@ class Entity {
 
 
 	/**
+	 * @var boolean $convert_json
+	 */
+	private $convert_json = false;
+
+
+	/**
 	 * Dynamic getter and setter
 	 * @param string $method
 	 * @param array $params
@@ -151,6 +157,23 @@ class Entity {
 
 
 	/**
+	 * Columns containing valid JSON will be converted to Array's automatically
+	 * @param boolean $convert
+	 * @return sFire\Adapter\MySQL\Entity
+	 */
+	public function convertToJson($convert = true) {
+
+		if(false === is_bool($convert)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type Boolean, "%s" given', __METHOD__, gettype($convert)), E_USER_ERROR);
+		}
+
+		$this -> convert_json = $convert;
+
+		return $this;
+	}
+
+
+	/**
 	 * Converts given array to entity data
 	 * @param array $data
 	 * @return sFire\Adapter\MySQL\Entity
@@ -166,6 +189,7 @@ class Entity {
 		foreach($data as $column => $value) {
 			
 			$value 	= $this -> convertToDate($value);
+			$value 	= $this -> convertJsonToArray($value);
 			$col 	= NameConvert :: toCamelcase($column, true);
 			$method = 'set' . $col;
 
@@ -322,6 +346,10 @@ class Entity {
 				$values[$b] = $a -> loadFormat();
 			}
 
+			if(true === is_array($a)) {
+				$values[$b] = json_encode($a);
+			}
+
 			$columns[] = sprintf('%s = VALUES(%s)', $this -> getAdapter() -> escape($b), $this -> getAdapter() -> escape($b));
 		});
 
@@ -401,6 +429,57 @@ class Entity {
 
 
 	/**
+	 * Refreshes the the current entitiy based on optional identifier(s) and value(s)
+	 * @param array $identifiers
+	 * @return sFire\Adapter\MySQL\Entity
+	 */
+	public function refresh($identifiers = null) {
+		
+		if(true === is_string($identifiers)) {
+			$identifiers = [$identifiers];
+		}
+
+		if(null !== $identifiers && false === is_array($identifiers)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($identifiers)), E_USER_ERROR);
+		}
+
+		if(null === $this -> getAdapter()) {
+			return trigger_error('Adapter is not set. Set the adapter with the setAdapter() method', E_USER_ERROR);
+		}
+
+		$class  	 = new \ReflectionClass(get_class($this));
+		$values  	 = $identifiers ? $identifiers : $this -> toArray();
+		$identifiers = $identifiers ? array_keys($identifiers) : $this -> getIdentifier();	
+		$where 		 = [];
+		$escape 	 = [];
+
+		if(0 === count($identifiers)) {
+			return trigger_error(sprintf('Identifier is NULL. Can not refresh entity without a valid value as identifier in %s', $class -> getFileName()), E_USER_ERROR);
+		}
+
+		if(true === is_array($identifiers)) {
+
+			foreach($identifiers as $identifier) {
+
+				if(true === isset($values[$identifier])) {
+					
+					$where[]  = $this -> getAdapter() -> escape($identifier) . ' = ?';
+					$escape[] = $values[$identifier];
+				}
+			}
+		}
+
+		if(0 === count($where)) {
+			return trigger_error('No valid identifiers found. Either no identifier is set or one or more identifier values are empty.', E_USER_ERROR);
+		}
+
+		$query = sprintf('SELECT * FROM %s WHERE %s LIMIT 1', $this -> getAdapter() -> escape($this -> getTable()), implode($where, ' AND '));
+
+		return $this -> fromArray($this -> getAdapter() -> query($query, $escape) -> toArray() -> current());
+	}
+
+
+	/**
 	 * Will be triggerd before saving entity to database
 	 * @return sFire\Adapter\MySQL\Entity
 	 */
@@ -472,6 +551,29 @@ class Entity {
 
 					$d -> saveFormat($format);
 					return $d;
+				}
+			}
+		}
+
+		return $value;
+	}
+
+
+	/**
+	 * Tries covnert values to JSON strings. Otherwise, returns the given value
+	 * @param string $value
+	 * @return mixed
+	 */
+	public function convertJsonToArray($value) {
+
+		if(true === $this -> convert_json) {
+
+			if(true === is_string($value)) {
+
+				$tmp = @json_decode($value, true);
+
+				if(true === (json_last_error() == JSON_ERROR_NONE)) {
+					$value = $tmp;
 				}
 			}
 		}

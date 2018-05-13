@@ -32,19 +32,28 @@ class Url implements RuleInterface {
 	 */
 	public function isValid() {
 
-		$value = $this -> getValue();
+		$value  = $this -> getValue();
+		$params = $this -> getParameters();
+
+		if(false === isset($params[0])) {
+			$params = [false];
+		}
+
+		if(true === isset($params[0]) && false === is_bool($params[0])) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type boolean, "%s" given', __METHOD__, gettype($params[0])), E_USER_ERROR);
+		}
 
 		if(true === $this -> getValidateAsArray() && true === is_array($value)) {
 			
 			foreach($value as $val) {
 
-				if(false === $this -> check($val)) {
+				if(false === $this -> check($val, $params)) {
 					return false;
 				}
 			}
 		}
 		else {
-			return $this -> check($value);
+			return $this -> check($value, $params);
 		}
 
 		return true;
@@ -54,11 +63,20 @@ class Url implements RuleInterface {
 	/**
 	 * Check if rule passes
 	 * @param mixed $value
+	 * @param array $params
 	 * @return boolean
 	 */
-	private function check($value) {
+	private function check($value, $params) {
 
-		if(is_string($value)) {
+		if(true === is_string($value)) {
+
+			if(true === $params[0]) {
+				return filter_var($value, \FILTER_VALIDATE_URL) !== false;
+			}
+ 			
+ 			$value = preg_replace('/^http(s):\/\//i', '', $value);
+ 			$value = 'http://' . $value;
+
  			return filter_var($value, \FILTER_VALIDATE_URL) !== false;
  		}
 

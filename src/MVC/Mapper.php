@@ -50,9 +50,27 @@ class Mapper extends Main {
 
 		if(false === isset($this -> dbtables[$dbtable])) {
 
-			$class 		= Application :: get(['prefix', 'dbtable']) . NameConvert :: toCamelCase($dbtable, true);
+
+			$folders 	= explode('.', $dbtable); //Convert dots to directory separators
+			$amount 	= count($folders) - 1;
+			$namespace	= '';
+
+			foreach($folders as $index => $folder) {
+
+				if($amount === $index) {
+					
+					$class = Application :: get(['prefix', 'dbtable']) . NameConvert :: toCamelCase($folder, true);
+					$namespace .= $class;
+
+					break;
+				}
+
+				$namespace 	.= $folder . DIRECTORY_SEPARATOR;
+			}
+
+
 			$path 		= Router :: getRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'dbtable']);
-			$namespace 	= str_replace(DIRECTORY_SEPARATOR, '\\', $path . $class);
+			$namespace 	= str_replace(DIRECTORY_SEPARATOR, '\\', $path . $namespace);
 
 			if(false === class_exists($namespace)) {
 				return trigger_error(sprintf('"%s" class does not exists in "%s"', $class, $path), E_USER_ERROR);

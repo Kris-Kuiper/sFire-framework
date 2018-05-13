@@ -9,6 +9,8 @@
   
 namespace sFire\Entity;
 
+use sFire\Container\Container;
+
 class Entity {
 	
 
@@ -40,7 +42,12 @@ class Entity {
 
 				if($amount === 0 || ($amount > 0 && true === isset($set[$key]))) {
 
-					$value		 = call_user_func_array([$this, $method], []);
+					$value = call_user_func_array([$this, $method], []);
+
+					if($value instanceof Container) {
+						$value = $value -> all();
+					}
+
 					$array[$key] = $value;
 				}
 			}
