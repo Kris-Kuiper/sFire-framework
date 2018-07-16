@@ -46,13 +46,13 @@ class Isdate implements RuleInterface {
 			
 			foreach($value as $val) {
 
-				if(false === $this -> check($val)) {
+				if(false === $this -> check($val, $params)) {
 					return false;
 				}
 			}
 		}
 		else {
-			return $this -> check($value);
+			return $this -> check($value, $params);
 		}
 
 		return true;
@@ -62,9 +62,10 @@ class Isdate implements RuleInterface {
 	/**
 	 * Check if rule passes
 	 * @param mixed $value
+	 * @param array $params
 	 * @return boolean
 	 */
-	private function check($value) {
+	private function check($value, $params) {
 		
 		$timestamp = strtotime($value);
 

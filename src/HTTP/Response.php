@@ -24,7 +24,7 @@ class Response {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($type)), E_USER_ERROR);
 		}
 
-		if(false == is_string($value)) {
+		if(false == is_string($value) && false == is_numeric($value)) {
 			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($value)), E_USER_ERROR);
 		}
 
@@ -70,7 +70,13 @@ class Response {
 
 		if(null !== $file -> entity()) {
 
-			static :: addHeader('Content-Type', $file -> entity() -> getMime());
+			//Add mime if known
+			$mime = $file -> entity() -> getMime();
+
+			if(null !== $mime) {
+				static :: addHeader('Content-Type', $file -> entity() -> getMime());
+			}
+
 			static :: addHeader('Content-Transfer-Encoding', 'binary');
 			static :: addHeader('Expires', '0');
 			static :: addHeader('Pragma', 'public');

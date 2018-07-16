@@ -13,8 +13,9 @@ use sFire\Routing\Router;
 use sFire\Utils\NameConvert;
 use sFire\DateTime\DateTime;
 use sFire\Application\Application;
+use sFire\MVC\Service;
 
-class Entity {
+class Entity extends Service{
 
 	/**
 	 * @var mixed $adapter
@@ -73,7 +74,7 @@ class Entity {
 
 			if(true === isset($this -> columns[$column])) {
 
-				if(true === isset($params[0])) {
+				if(count($params) > 0) {
 					$this -> columns[$column][key($this -> columns[$column])] = $params[0];
 				}
 			}
@@ -106,7 +107,7 @@ class Entity {
 	/**
 	 * Set the current table
 	 * @param string $table
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	public function setTable($table) {
 
@@ -142,7 +143,7 @@ class Entity {
 	/**
 	 * Adds a string or array of date formats so selected dates which matches the formats will be converted automatically to Date Objects
 	 * @param array|string $formats
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	public function setDateFormat($formats) {
 
@@ -159,7 +160,7 @@ class Entity {
 	/**
 	 * Columns containing valid JSON will be converted to Array's automatically
 	 * @param boolean $convert
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	public function convertToJson($convert = true) {
 
@@ -176,7 +177,7 @@ class Entity {
 	/**
 	 * Converts given array to entity data
 	 * @param array $data
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	public function fromArray($data) {
 
@@ -350,8 +351,15 @@ class Entity {
 				$values[$b] = json_encode($a);
 			}
 
-			$columns[] = sprintf('%s = VALUES(%s)', $this -> getAdapter() -> escape($b), $this -> getAdapter() -> escape($b));
+			$columns[] = sprintf('`%s` = VALUES(`%s`)', $this -> getAdapter() -> escape($b), $this -> getAdapter() -> escape($b));
 		});
+
+		//Convert column names to column names with backtics
+		foreach($values as $column => $value) {
+			
+			$values['`' . $column . '`'] = $value;
+			unset($values[$column]);
+		}
 
 		$query = sprintf('INSERT INTO %s (%s) VALUES(%s) ON DUPLICATE KEY UPDATE %s', $this -> getAdapter() -> escape($this -> getTable()), implode(array_keys($values), ', '), implode(array_fill(0, count($values), '?'), ','), implode($columns, ', '));
 
@@ -431,7 +439,7 @@ class Entity {
 	/**
 	 * Refreshes the the current entitiy based on optional identifier(s) and value(s)
 	 * @param array $identifiers
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	public function refresh($identifiers = null) {
 		
@@ -480,8 +488,19 @@ class Entity {
 
 
 	/**
+	 * Clears all data stored in Entity except identifiers 
+	 * @return $this
+	 */
+	public function clear() {
+
+		$this -> columns = [];
+		return $this;
+	}
+
+
+	/**
 	 * Will be triggerd before saving entity to database
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	protected function beforeSave() {
 		return $this;
@@ -490,7 +509,7 @@ class Entity {
 
 	/**
 	 * Will be triggerd after saving entity to database
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	protected function afterSave() {
 		return $this;
@@ -499,7 +518,7 @@ class Entity {
 
 	/**
 	 * Will be triggerd before deleting entity from database
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	protected function beforeDelete() {
 		return $this;
@@ -508,7 +527,7 @@ class Entity {
 
 	/**
 	 * Will be triggerd after deleting entity from database
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	protected function afterDelete() {
 		return $this;
@@ -517,7 +536,7 @@ class Entity {
 
 	/**
 	 * Will be triggerd before the entity is loaded
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	protected function beforeLoad() {
 		return $this;
@@ -526,7 +545,7 @@ class Entity {
 
 	/**
 	 * Will be triggerd after the entity is loaded
-	 * @return sFire\Adapter\MySQL\Entity
+	 * @return $this
 	 */
 	protected function afterLoad() {
 		return $this;

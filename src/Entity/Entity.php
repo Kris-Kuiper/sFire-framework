@@ -48,6 +48,10 @@ class Entity {
 						$value = $value -> all();
 					}
 
+					if(0 === strlen(trim($key)) && ($value === null || 0 === strlen(trim($value)))) {
+						continue;
+					}
+
 					$array[$key] = $value;
 				}
 			}

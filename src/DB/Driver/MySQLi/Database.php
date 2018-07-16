@@ -269,7 +269,7 @@ class Database implements InterfaceDB {
 	 * Prepare a raw query
 	 * @param string $query
 	 * @param array $params
-	 * @return sFire\Adapter\MySQLI
+	 * @return $this
 	 */
 	public function query($query, $params = []) {
 		
@@ -316,6 +316,56 @@ class Database implements InterfaceDB {
 
 
 	/**
+	 * Execute a multiquery
+	 * @param string $query
+	 * @param array $params
+	 * @return sFire\Adapter\ResultSet
+	 */
+	public function multiquery($query, $params = []) {
+
+		if(true === is_array($query)) {
+			$query = implode(";\n", $query);
+		}
+
+		if(false === is_string($query)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or array, "%s" given', __METHOD__, gettype($query)), E_USER_ERROR);
+		}
+
+		$results = new ResultSet([], 'array');
+
+		if(null === $this -> connection) {
+			$this -> connect();
+		}
+
+		//Escape paramaters
+		$query = $this -> escapeSql($query, $params);
+
+		if($this -> connection -> multi_query($query)) {
+
+			$array = [];
+
+			do {
+
+				if($result = $this -> connection -> use_result()) {
+
+					while($row = $result -> fetch_array(MYSQLI_ASSOC)) {
+						$array[] = $row;
+					}
+
+					$result -> close();
+					$results -> append($array);
+					$array = [];
+				}
+			}
+
+			while($this -> connection -> more_results() && $this -> connection -> next_result());
+		}
+
+		return $results;
+	}
+
+
+	/**
 	 * Execute all statements and returns boolean on succes/failure
 	 * @return boolean
 	 */
@@ -342,6 +392,10 @@ class Database implements InterfaceDB {
 	 */
 	public function escape($data) {
 
+		if(null === $data) {
+			return $data;
+		}
+
 		if(false === is_string($data) && false === is_numeric($data)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, float or int, "%s" given', __METHOD__, gettype($data)), E_USER_ERROR);
 		}
@@ -356,7 +410,7 @@ class Database implements InterfaceDB {
 
 	/**
 	 * Begin a transaction
-	 * @return sFire\Adapter\MySQLI
+	 * @return $this
 	 */
 	public function transaction() {
 
@@ -365,7 +419,7 @@ class Database implements InterfaceDB {
 		}
 
 		$this -> connection -> autocommit(false);
-		$this -> connection -> begin_transaction();
+		$this -> connection -> begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 
 		return $this;
 	}
@@ -373,7 +427,7 @@ class Database implements InterfaceDB {
 
 	/**
 	 * Commit a transaction
-	 * @return sFire\Adapter\MySQLI
+	 * @return $this
 	 */
 	public function commit() {
 		
@@ -390,7 +444,7 @@ class Database implements InterfaceDB {
 
 	/**
 	 * Rollback a transaction
-	 * @return sFire\Adapter\MySQLI
+	 * @return $this
 	 */
 	public function rollback() {
 
@@ -407,7 +461,7 @@ class Database implements InterfaceDB {
 
 	/**
 	 * Closes the database connection
-	 * @return sFire\Adapter\MySQLI
+	 * @return $this
 	 */
 	public function close() {
 
@@ -467,6 +521,111 @@ class Database implements InterfaceDB {
 
 
 	/**
+	 * Escapes variables withing an sql query (replacing :var)
+	 * @param string $query
+	 * @param array $params
+	 * @return array
+	 */
+	private function escapeSql($query, $params = []) {
+
+		if(false === is_string($query)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($query)), E_USER_ERROR);
+		}
+
+		if(false === is_array($params)) {
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($data)), E_USER_ERROR);
+		}
+
+		//Check the type of param binding ("?" = all keys are numeric or ":" = all keys are strings)
+	 	if(0 !== count(array_filter(array_keys($params), 'is_string'))) {
+			$query = $this -> escapeSemicolon($query, $params);
+	 	}
+
+	 	//Variables are bind with the ? sign
+	 	else {
+	 		$query = $this -> escapeQuestionmark($query, $params);
+	 	}
+
+	 	return $query;
+	}
+
+
+	/**
+	 * Escape variables bind with a semicolon
+	 * @param string $query
+	 * @param array $params
+	 * @return string
+	 */
+	private function escapeSemicolon($query, $params) {
+
+		preg_match_all('#:((?:[a-zA-Z_])(?:[a-zA-Z0-9-_]+)?)#', $query, $variables);
+
+		if(true === isset($variables[0])) {
+
+			foreach($variables[0] as $index => $variable) {
+				
+				if(false === array_key_exists($variables[1][$index], $params)) {
+					return trigger_error(sprintf('Parameter "%s" missing from parameters', $params[1][$index]), E_USER_ERROR);
+				}
+
+				$var = $params[$variables[1][$index]];
+					
+				switch(gettype($var)) {
+
+					case 'string' : $var = '"' . $this -> escape($var) . '"'; break;
+					case 'NULL' : $var = 'NULL'; break;
+					default : $var = $this -> escape($var); break;
+				}
+
+				$query = str_replace($variables[0][$index], $var, $query);
+			}
+		}
+
+		return $query;
+	}
+
+
+	/**
+	 * Escape variables bind with a question mark
+	 * @param string $query
+	 * @param array $params
+	 * @return string
+	 */
+	private function escapeQuestionmark($query, $params) {
+
+		preg_match_all('#([\\\]{0,})(\?)#', $query, $variables);
+
+ 		if(true === isset($variables[0])) {
+
+ 			foreach($variables[0] as $index => $variable) {
+
+ 				//Check if ? sign is escaped or not
+ 				if(strlen($variables[1][$index]) % 2 !== 0) {
+ 					continue;
+ 				}
+
+ 				if(false === isset($params[$index])) {
+ 					return trigger_error('Number of variable elements query string does not match number of bind variables');
+ 				}
+
+ 				$var = $params[$index];
+
+ 				switch(gettype($var)) {
+
+					case 'string' : $var = '"' . $this -> escape($var) . '"'; break;
+					case 'NULL' : $var = 'NULL'; break;
+					default : $var = $this -> escape($var); break;
+				}
+ 				
+ 				$query = preg_replace('#' . preg_quote($variable, '/') . '#', $var, $query, 1);
+ 			}
+ 		}
+
+		return $query;
+	}
+
+
+	/**
 	 * Executes one statement
 	 * @param mysqli_stmt
 	 * @return mysqli_stmt
@@ -507,7 +666,7 @@ class Database implements InterfaceDB {
 
 				foreach($variables[0] as $index => $variable) {
 					
-					if(false === isset($params[$variables[1][$index]])) {
+					if(false === array_key_exists($variables[1][$index], $params)) {
 						return trigger_error(sprintf('Parameter "%s" missing from bind parameters', $variables[1][$index]), E_USER_ERROR);
 					}
 					

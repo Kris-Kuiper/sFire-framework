@@ -85,6 +85,10 @@ class Escape {
 	 */
 	public static function html($string) {
 
+        if(null === $string) {
+            return '';
+        }
+
 		if(true === is_numeric($string)) {
     		return $string;
     	}
@@ -103,6 +107,10 @@ class Escape {
 	 * @return string
 	 */
     public static function attr($string) {
+
+        if(null === $string) {
+            return '';
+        }
 
     	if(true === is_numeric($string)) {
     		return $string;
@@ -131,6 +139,10 @@ class Escape {
      */
     public static function url($string) {
 
+        if(null === $string) {
+            return '';
+        }
+
     	if(true === is_numeric($string)) {
     		return $string;
     	}
@@ -149,6 +161,10 @@ class Escape {
      * @return string
      */
     public static function js($string) {
+
+        if(null === $string) {
+            return '';
+        }
 
     	if(true === is_numeric($string)) {
     		return $string;
@@ -177,6 +193,10 @@ class Escape {
      */
     public static function css($string) {
 
+        if(null === $string) {
+            return '';
+        }
+        
     	if(true === is_numeric($string)) {
     		return $string;
     	}

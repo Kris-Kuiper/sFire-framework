@@ -175,14 +175,19 @@ trait Validator {
 
 
 	/**
-	 * Loads a custom validator rule
+	 * Loads a custom validator rule with optional validator name
 	 * @param string $classname
+	 * @param string $name
 	 * @return sFire\Validator
 	 */
-	public function load($classname) {
+	public function load($classname, $name = null) {
 
 		if(false === is_string($classname)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($classname)), E_USER_ERROR);
+		}
+
+		if(null !== $name && false === is_string($name)) {
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($name)), E_USER_ERROR);
 		}
 
 		$directories 	= explode('.', $classname); //Convert dots to directory seperators
@@ -200,10 +205,15 @@ trait Validator {
 			$namespace 	.= $directory . '\\';
 		}
 
-		$this -> custom[$directory] = $namespace;
+		if(false === class_exists($namespace)) {
+			return trigger_error(sprintf('Class "%s" does not exists or is not a valid validator rule', $namespace), E_USER_ERROR);
+		}
+
+		$name = (null !== $name ? $name : $directory);
+		$this -> custom[$name] = $namespace;
 
 		$instance = $this -> getMessageInstance();
-		$instance :: loadCustom($directory, $namespace);
+		$instance :: loadCustom($directory, $namespace, $name);
 
 		return $this;
 	}
@@ -335,6 +345,25 @@ trait Validator {
      */
     public function retrieve($key) {
         return Store :: get($key);
+    }
+
+
+    /**
+     * Set an error message for specific field (used for own custom validation in combination with sFire validation rules)
+     * @param string $field
+     * @param string $message
+     * @return $this
+     */
+    public function setError($field, $message) {
+
+    	$instance = $this -> getMessageInstance();
+
+    	$instance :: setFieldnames([$field]);
+		$instance :: setError($this -> getPrefix(), $field, $message);
+
+		$this -> setPasses(false);
+
+    	return $this;
     }
 
 

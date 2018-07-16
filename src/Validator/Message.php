@@ -185,9 +185,10 @@ trait Message {
 	 * Loads a custom validator class
 	 * @param string $classname
 	 * @param string $namespace
+	 * @param string $name
 	 * @return sFire\Validator\Message
 	 */
-	public static function loadCustom($classname, $namespace) {
+	public static function loadCustom($classname, $namespace, $name) {
 
 		if(false === is_string($classname)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($classname)), E_USER_ERROR);
@@ -197,7 +198,11 @@ trait Message {
 			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($namespace)), E_USER_ERROR);
 		}
 
-		static :: $custom[$classname] = $namespace;
+		if(false === is_string($name)) {
+			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($name)), E_USER_ERROR);
+		}
+
+		static :: $custom[$name] = $namespace;
 
 		return static :: Instance();
 	}
