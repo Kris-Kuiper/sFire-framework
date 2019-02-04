@@ -58,6 +58,10 @@ class Service {
 	 */
 	protected function config($data = []) {
 
+		if(null === $data) {
+			$data = [];
+		}
+
 		if(false === is_array($data)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($data)), E_USER_ERROR);
 		}

@@ -238,7 +238,10 @@ class File {
 				$this -> file -> setName($info -> filename);
 				$this -> file -> setBasename($info -> basename);
 				$this -> file -> setBasepath($this -> file -> getPath() . $this -> file -> getBasename());
-				$this -> file -> setExtension($info -> extension);
+				
+				if(true === isset($info -> extension)) {
+					$this -> file -> setExtension($info -> extension);
+				}
 
 				$this -> refresh();
 			}

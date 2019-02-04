@@ -50,7 +50,6 @@ class Mapper extends Main {
 
 		if(false === isset($this -> dbtables[$dbtable])) {
 
-
 			$folders 	= explode('.', $dbtable); //Convert dots to directory separators
 			$amount 	= count($folders) - 1;
 			$namespace	= '';
@@ -88,7 +87,11 @@ class Mapper extends Main {
 				}
 			}
 
-			call_user_func_array([$this -> dbtables[$dbtable], 'setTable'], [$dbtable]);
+			$table = $this -> dbtables[$dbtable] -> getTable();
+
+			if(null === $table) {
+				$this -> dbtables[$dbtable] -> setTable($dbtable);
+			}
 		}
 
 		output:

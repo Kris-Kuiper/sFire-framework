@@ -65,22 +65,35 @@ class Response {
 	/**
 	 * Give a file for the client to download
 	 * @param sFire\System\File $file
+	 * @param string $name
+	 * @param string $mime
 	 */
-	public static function file(File $file) {
+	public static function file(File $file, $filename = null, $mime = null) {
+
+		if(null !== $filename && false === is_string($filename)) {
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($filename)), E_USER_ERROR);
+		}
+
+		if(null !== $mime && false === is_string($mime)) {
+			return trigger_error(sprintf('Argument 3 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($mime)), E_USER_ERROR);
+		}
 
 		if(null !== $file -> entity()) {
 
+			//Determine file name
+			$filename = null !== $filename ? $filename : $file -> entity() -> getBasename();
+
 			//Add mime if known
-			$mime = $file -> entity() -> getMime();
+			$mime = null !== $mime ? $mime : $file -> getMime();
 
 			if(null !== $mime) {
-				static :: addHeader('Content-Type', $file -> entity() -> getMime());
+				static :: addHeader('Content-Type', $mime);
 			}
 
 			static :: addHeader('Content-Transfer-Encoding', 'binary');
 			static :: addHeader('Expires', '0');
 			static :: addHeader('Pragma', 'public');
-			static :: addHeader('Content-Disposition', 'attachment; filename="' . $file -> entity() -> getBasename() . '"');
+			static :: addHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
 			static :: addHeader('Content-Length', $file -> entity() -> getFilesize());
 			static :: addHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
 			static :: addHeader('Expires', 'Tue, 25 Oct '. (date('Y') - 10) .' 05:00:00 GMT');

@@ -206,11 +206,13 @@ final class Route {
 			$key = [$key => $value];
 		}
 
-		$assign = [];
-		$group  = Router :: getGroup();
+		$group = Router :: getGroup();
 
 		if(true === $merge && true === isset($group['assign'])) {
-			$this -> attr['assign'] = $this -> arrayRecursiveMerge($this -> attr['assign'], $group['assign']);
+			$this -> attr['assign'] = $this -> arrayRecursiveMerge($key, $group['assign']);
+		}
+		else {
+			$this -> attr['assign'] = $key;
 		}
 
 		return $this;

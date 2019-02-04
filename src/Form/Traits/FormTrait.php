@@ -84,12 +84,12 @@ trait FormTrait {
      */
     public function value($value = null) {
 
-        if(null !== $value && false === is_string($value)) {
-            return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($value)), E_USER_ERROR);
+        if(null !== $value && false === is_string($value) && false === is_numeric($value)) {
+            return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or number, "%s" given', __METHOD__, gettype($value)), E_USER_ERROR);
         }
 
-        $this -> value = $value;
-        $this -> attributes['value'] = $value;
+        $this -> value = (string) $value;
+        $this -> attributes['value'] = (string) $value;
 
         return $this;
     }
@@ -102,8 +102,8 @@ trait FormTrait {
      */
     public function name($name = null) {
 
-        if(null !== $name && false === is_string($name)) {
-            return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($name)), E_USER_ERROR);
+        if(null !== $name && false === is_string($name) && false === is_numeric($name)) {
+            return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or number, "%s" given', __METHOD__, gettype($name)), E_USER_ERROR);
         }
 
         $this -> name = $name;
