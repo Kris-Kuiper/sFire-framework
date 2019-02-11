@@ -36,12 +36,6 @@ class ResultSet extends \ArrayIterator {
 
 
 	/**
-	 * @var string $type
-	 */
-	private $type = null;
-
-
-	/**
 	 * Constructor
 	 * @param array $dataset
 	 * @param mixed $type
@@ -51,9 +45,6 @@ class ResultSet extends \ArrayIterator {
 		if(null !== $type && false === is_string($type) && 'object' !== gettype($type)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type String or Object, "%s" given', __METHOD__, gettype($type)), E_USER_ERROR);
 		}
-
-		$this -> type = $type;
-		$this -> adapter = $adapter;
 
 		switch($type) {
 
@@ -97,7 +88,7 @@ class ResultSet extends \ArrayIterator {
 
 		if(null !== $current) {
 
-			if(true === $this -> is_multidimensional($current)) {
+			if(false === is_string($current) && false === is_numeric($current) && true === $this -> is_multidimensional($current)) {
 
 				if($this -> convert !== self :: TYPE_ARRAY) {
 					return trigger_error(sprintf('Multidimensional Array can not be converted to "%s" type in "%s"', $this -> convert, __METHOD__), E_USER_ERROR);	
@@ -147,6 +138,27 @@ class ResultSet extends \ArrayIterator {
             
             $current = parent :: current();
 
+            if(true === is_array($column)) {
+
+            	$tmp = $current;
+            	$insert = true;
+
+            	foreach($column as $index) {
+
+            		if(false === isset($tmp[$index])) {
+            			
+            			$insert = false;
+            			break;
+            		}
+
+            		$tmp = $tmp[$index];
+            	}
+
+            	if(true === $insert) {
+            		$plucked[] = $tmp;
+            	}
+            }
+
             if(true === isset($current[$column])) {
             	$plucked[] = $current[$column];
             }
@@ -154,9 +166,12 @@ class ResultSet extends \ArrayIterator {
             parent :: next();
         }
 
-        $class = __CLASS__;
+        switch($this -> convert) {
 
-        return new $class($plucked, $this -> type, $this -> adapter);
+			case self :: TYPE_ARRAY: return $plucked;
+			case self :: TYPE_OBJECT: return (object) $plucked;
+			case self :: TYPE_JSON: return json_encode($plucked);
+		}
 	}
 
 

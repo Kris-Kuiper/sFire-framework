@@ -226,6 +226,10 @@ class Database implements InterfaceDB {
 	 */
 	public function fetch($type = null) {
 
+		if(null !== $type && false === is_string($type)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($query)), E_USER_ERROR);
+		}
+
 		$results = new ResultSet([], $type);
 
 		//Returns a copy of a value
