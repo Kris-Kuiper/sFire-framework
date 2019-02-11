@@ -47,6 +47,9 @@ class Mime extends Container {
 		static :: add('acgi', 		'text/html');
 		static :: add('htm', 		'text/html');
 		static :: add('html', 		'text/html');
+		static :: add('csv', 		'text/csv');
+		static :: add('json', 		'application/json');
+		static :: add('jsonp', 		'application/javascript');
 		static :: add('htmls', 		'text/html');
 		static :: add('htx', 		'text/html');
 		static :: add('shtml', 		'text/html');

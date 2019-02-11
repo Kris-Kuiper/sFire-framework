@@ -68,7 +68,7 @@ class Lengthmax implements RuleInterface {
 	 */
 	private function check($value, $params) {
 
-		if(true === is_string($value)) {
+		if(true === is_string($value) || is_numeric($value)) {
 			return strlen($value) <= (int) $params[0];
 		}
 

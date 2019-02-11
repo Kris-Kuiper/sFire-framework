@@ -36,6 +36,12 @@ class ResultSet extends \ArrayIterator {
 
 
 	/**
+	 * @var string $type
+	 */
+	private $type = null;
+
+
+	/**
 	 * Constructor
 	 * @param array $dataset
 	 * @param mixed $type
@@ -45,6 +51,9 @@ class ResultSet extends \ArrayIterator {
 		if(null !== $type && false === is_string($type) && 'object' !== gettype($type)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type String or Object, "%s" given', __METHOD__, gettype($type)), E_USER_ERROR);
 		}
+
+		$this -> type = $type;
+		$this -> adapter = $adapter;
 
 		switch($type) {
 
@@ -122,6 +131,32 @@ class ResultSet extends \ArrayIterator {
 					return $entity;
 			}
 		}
+	}
+
+
+	/**
+	 * Plucks a column from a resultset
+	 * @param string|integer $column
+	 * @return new sFire\DB\Resultset
+	 */
+	public function pluck($column) {
+
+		$plucked = [];
+
+		while(parent :: valid()) {
+            
+            $current = parent :: current();
+
+            if(true === isset($current[$column])) {
+            	$plucked[] = $current[$column];
+            }
+
+            parent :: next();
+        }
+
+        $class = __CLASS__;
+
+        return new $class($plucked, $this -> type, $this -> adapter);
 	}
 
 

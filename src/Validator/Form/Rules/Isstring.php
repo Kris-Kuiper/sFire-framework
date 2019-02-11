@@ -57,7 +57,7 @@ class Isstring implements RuleInterface {
 	 * @return boolean
 	 */
 	private function check($value) {
-		return true === is_string($value);
+		return true === is_string($value) || true === is_numeric($value);
 	}
 }
 ?>
