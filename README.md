@@ -7,7 +7,7 @@ sFire Framework requires PHP 5.5.*, 5.6.*, 7.0.*, 7.1.*, 7.2.*, 7.3.* or later; 
 
 
 ### Current version
-The current version is 3.0.19 of the sFire Framework.
+The current version is 3.0.20 of the sFire Framework.
 
 
 ### Installation

@@ -10,12 +10,15 @@
 namespace sFire\MVC;
 
 use sFire\MVC\Main;
+use sFire\MVC\NamespaceTrait;
 use sFire\Routing\Router;
 use sFire\Utils\NameConvert;
 use sFire\Application\Application;
 
 class Mapper extends Main {
 
+
+	use NamespaceTrait;
 
 	/**
 	 * @var string $dbtable
@@ -67,8 +70,7 @@ class Mapper extends Main {
 				$namespace 	.= $folder . DIRECTORY_SEPARATOR;
 			}
 
-
-			$path 		= Router :: getRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'dbtable']);
+			$path 		= $this -> getNamespace($this, ['directory', 'mapper'], ['directory', 'dbtable']);
 			$namespace 	= str_replace(DIRECTORY_SEPARATOR, '\\', $path . $namespace);
 
 			if(false === class_exists($namespace)) {

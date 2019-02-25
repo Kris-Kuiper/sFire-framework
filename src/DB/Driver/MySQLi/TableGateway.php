@@ -14,8 +14,12 @@ use sFire\Routing\Router;
 use sFire\DB\ResultSet;
 use sFire\Utils\NameConvert;
 use sFire\Application\Application;
+use sFire\MVC\NamespaceTrait;
 
 class TableGateway extends Main {
+
+	use NamespaceTrait;
+
 
 	private $data;
 
@@ -338,7 +342,7 @@ class TableGateway extends Main {
 	 * @param string $query
 	 * @param array $params
 	 * @param boolean $toEntity
-	 * @return sFire\Adapter\MySQL\ResultSet | null
+	 * @return sFire\Adapter\MySQL\ResultSet
 	 */
 	public function select($query, $params = [], $type = null) {
 
@@ -398,7 +402,7 @@ class TableGateway extends Main {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($table)), E_USER_ERROR);
 		}
 
-		$path = Router :: getRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'entity']) . Application :: get(['prefix', 'entity']) . NameConvert :: toCamelCase($table, true);
+		$path  = $this -> getNamespace($this, ['directory', 'dbtable'], ['directory', 'entity']) . Application :: get(['prefix', 'entity']) . NameConvert :: toCamelCase($table, true);
 		$path = str_replace(DIRECTORY_SEPARATOR, '\\', $path);
 
 		return $path;

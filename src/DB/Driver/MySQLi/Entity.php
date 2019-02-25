@@ -13,9 +13,14 @@ use sFire\Routing\Router;
 use sFire\Utils\NameConvert;
 use sFire\DateTime\DateTime;
 use sFire\Application\Application;
+use sFire\MVC\NamespaceTrait;
 use sFire\MVC\Service;
 
-class Entity extends Service{
+
+class Entity extends Service {
+
+	use NamespaceTrait;
+
 
 	/**
 	 * @var mixed $adapter
@@ -129,9 +134,9 @@ class Entity extends Service{
 
 		if(null === $this -> table) {
 
-			$class = new \ReflectionClass(get_class($this));
-			$path  = Router :: getRoute() -> getModule() . DIRECTORY_SEPARATOR . Application :: get(['directory', 'entity']) . Application :: get(['prefix', 'entity']);
+			$path  = $this -> getNamespace($this, ['directory', 'entity'], ['directory', 'entity']) . Application :: get(['prefix', 'entity']);
 			$path  = str_replace(DIRECTORY_SEPARATOR, '\\', $path);
+			$class = new \ReflectionClass(get_class($this));
 			
 			$this -> table = NameConvert :: toSnakecase(str_replace($path, '', $class -> name));
 		}
