@@ -291,6 +291,13 @@ final class Router {
 			return trigger_error(sprintf('Domain "%s" does not exists in routes.php', $domain), E_USER_ERROR);
 		}
 
+		//Check if routes has a prefix and add it if it does
+		$prefix = $route -> getPrefix();
+
+		if(true === isset($prefix['url'])) {
+			$url = $prefix['url'] . $url;
+		}
+
 		return (null !== $domain ? rtrim($domain, '/') . '/' : '') . $url;
 	}
 

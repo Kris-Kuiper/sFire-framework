@@ -34,5 +34,14 @@ class DateTime extends \DateTime {
 	public function loadFormat() {
 		return $this -> format($this -> format);
 	}
+
+
+	/**
+	 * Magic method for returning the date
+	 * @return string
+	 */
+	public function __toString() {
+		return $this -> loadFormat();
+	}
 }
 ?>
