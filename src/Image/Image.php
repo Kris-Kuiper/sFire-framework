@@ -9,10 +9,9 @@
  
 namespace sFire\Image;
 
-use sFire\Image\AbstractImage;
 use sFire\Image\Color;
 
-class Image extends AbstractImage {
+class Image {
     
 
 	/**
@@ -119,7 +118,7 @@ class Image extends AbstractImage {
 
 
 	/**
-	 * Execute all commands and save the image to an optional new file giving with the $file paramter
+	 * Execute all commands and save the image to an optional new file giving with the $file parameter
 	 * @param string $file
 	 * @param int $quality
 	 * @return boolean
@@ -142,17 +141,9 @@ class Image extends AbstractImage {
 			return trigger_error(sprintf('Argument 2 passed to %s() must be between 0 and 100, "%s" given', __METHOD__, $quality), E_USER_ERROR);
 		}
 
-		foreach($this -> commands as $command) {
-			$resource = call_user_func_array([$this -> call(), $command -> method], $command -> params);
-		}
+		$extension = (null !== $file) ? pathinfo($file, PATHINFO_EXTENSION) : $this -> extension;
 
-		switch(strtolower($this -> extension)) {
-
-			case 'bmp'	: imagewbmp($resource, $file); break;
-			case 'png'	: imagepng($resource, $file, $this -> getQuality($quality, $this -> extension)); break;
-			case 'gif'	: imagegif($resource, $file); break;
-			default 	: imagejpeg($resource, $file, $this -> getQuality($quality, $this -> extension)); break;
-		}
+		return $this -> call() -> save($this -> commands, $extension, $this -> getQuality($quality, $extension), $file);
 	}
 
     
@@ -489,8 +480,8 @@ class Image extends AbstractImage {
 			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($extension)), E_USER_ERROR);
 		}
 
-		if(strtolower($extension) === 'png' && $quality > 9) {
-			$quality = floor(($quality - 1) / 10);
+		if(strtolower($extension) === 'png') {
+			$quality = min(9, floor((100 - $quality) / 10));
 		}
 
 		return $quality;

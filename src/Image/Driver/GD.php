@@ -9,10 +9,10 @@
  
 namespace sFire\Image\Driver;
 
-use sFire\Image\AbstractImage;
+use sFire\Image\AbstractDriver;
 use sFire\Image\Color;
 
-class GD extends AbstractImage {
+class GD extends AbstractDriver {
 
 
 	/**
@@ -372,6 +372,31 @@ class GD extends AbstractImage {
 
 
 	/**
+	 * Save the image to an optional new file giving with the $file parameter
+     * @param array $commands
+	 * @param string $extension
+	 * @param int $quality
+	 * @param string $file
+	 * @return boolean
+	 */
+	public function save($commands, $extension, $quality = 90, $file = null) {
+
+		foreach($commands as $command) {
+			call_user_func_array([$this, $command -> method], $command -> params);
+		}
+
+		switch(strtolower($extension)) {
+
+			case 'bmp'	: return imagebmp($this -> image, $file); break;
+			case 'png'	: return imagepng($this -> image, $file, $quality); break;
+			case 'gif'	: return imagegif($this -> image, $file); break;
+			case 'webp' : return imagewebp($this -> image, $file, $quality); break;
+			default 	: return imagejpeg($this -> image, $file, $quality); break;
+		}
+	}
+
+
+	/**
 	 * Creates new image resource. Returns false if failed.
 	 * @param int $x
 	 * @param int $y
@@ -380,7 +405,7 @@ class GD extends AbstractImage {
 	 * @param int $new_width
 	 * @param int $new_height
 	 * @param boolean $interlace
-	 * @return resource|boolean
+	 * @return boolean
 	 */
 	private function createImage($x, $y, $width, $height, $new_width, $new_height, $interlace = false) {
 
@@ -405,7 +430,7 @@ class GD extends AbstractImage {
 		if((true === $interlace && imageinterlace($this -> image, true)) || false === $interlace) {
 				
 			$this -> image = $resource;
-			return $this -> image;
+			return true;
 		}
 
 		return false;

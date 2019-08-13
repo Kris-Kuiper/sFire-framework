@@ -11,7 +11,7 @@ namespace sFire\Image;
 
 use sFire\Handler\NotImplementedHandler;
 
-abstract class AbstractImage {
+abstract class AbstractDriver {
 
 
 	/**
@@ -187,6 +187,18 @@ abstract class AbstractImage {
 	 * @param int $mode
 	 */
 	public function flip($mode) {
+		throw new NotImplementedHandler(__METHOD__);
+	}
+
+
+	/**
+	 * Save the image to an optional new file giving with the $file parameter
+     * @param array $commands
+	 * @param string $extension
+	 * @param int $quality
+	 * @param string $file
+	 */
+	public function save($commands, $extension, $quality = 90, $file = null) {
 		throw new NotImplementedHandler(__METHOD__);
 	}
 }
