@@ -3,7 +3,7 @@
  * sFire Framework
  *
  * @link      https://sfire.nl
- * @copyright Copyright (c) 2014-2018 sFire Framework.
+ * @copyright Copyright (c) 2014-2019 sFire Framework.
  * @license   http://sfire.nl/license BSD 3-CLAUSE LICENSE
  */
  
@@ -53,7 +53,7 @@ class File {
 			'basepath'	=> $info -> dirname . DIRECTORY_SEPARATOR . $info -> basename
 		];
 
-		if(true === is_file($file)) {
+		if(true === is_file($data['basepath'])) {
 			$data['exists'] = true;
 		}
 
@@ -229,8 +229,10 @@ class File {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($name)), E_USER_ERROR);
 		}
 
+		$this -> refresh();
+
 		if(false !== $this -> file -> getExists()) {
-			
+
 			if(rename($this -> file -> getBasepath(), $this -> file -> getPath() . $name)) {
 
 				$info = (object) pathinfo($this -> file -> getPath() . $name);
