@@ -13,14 +13,12 @@ use sFire\Config\Config;
 use sFire\Routing\Extend\Route;
 use sFire\Template\Template;
 use sFire\Config\Path;
+use sFire\Config\Middleware;
 use sFire\Config\Files;
 use sFire\Application\Application;
 
 #MVC
 final class MVC {
-
-
-	private $middleware = [];
 
 
 	/**
@@ -54,12 +52,21 @@ final class MVC {
 			$route -> setModule(key(Config :: all()));
 		}
 
+		//Intialise Middleware Container
+		MiddlewareContainer :: modus('before');
+		MiddlewareContainer :: matches($matches);
+		
 		//Preload all middleware 
 		$this -> preloadMiddleware($route);
 
 		//Execute all before methods from all middleware
-		$this -> executeBeforeMiddleware($matches);
+		MiddlewareContainer :: next();
 		
+		//Check if all the before middleware has been executed and that the last middleware want's to go to the controller by calling the next method
+		if(false === MiddlewareContainer :: isEmpty()) {
+			return;
+		}
+
 		//Load the controller
 		$namespace = $this -> loadController($route -> getModule(), $route -> getController());
 
@@ -71,7 +78,10 @@ final class MVC {
 			$this -> executeController($controller, $route, $matches);
 
 			//Execute the after middleware
-			return $this -> executeAfterMiddleware($matches);
+			MiddlewareContainer :: modus('after');
+			MiddlewareContainer :: next();
+
+			return ;
 		}
 
 		trigger_error(sprintf('Controller "%s" with module "%s" does not exists for "%s" as identifier in routes.php', $route -> getController(), $route -> getModule(), $route -> getIdentifier()), E_USER_ERROR);
@@ -228,6 +238,9 @@ final class MVC {
 			return;
 		}
 		
+		$before = [];
+		$after = [];
+
 		foreach($middleware as $class) {
 
 			$namespace = $this -> loadMiddleware($route -> getModule(), $class);
@@ -236,41 +249,8 @@ final class MVC {
 				return trigger_error(sprintf('Middleware "%s" with module "%s" does not exists for "%s" as identifier in routes.php', $class, $route -> getModule(), $route -> getIdentifier()), E_USER_ERROR);
 			}
 
-			if(false === isset($this -> middleware[$namespace])) {
-				$this -> middleware[$namespace] = new $namespace;
-			}
-		}
-	}
-
-
-	/**
-	 * Executes all before methods from all preloaded middleware classes
-	 * @return voic
-	 */
-	private function executeBeforeMiddleware($matches) {
-
-		foreach($this -> middleware as $class) {
-
-			//Execute method if middleware supports it
-			if(true === is_callable([$class, 'before'])) {
-				call_user_func_array([$class, 'before'], $matches);
-			}
-		}
-	}
-
-
-	/**
-	 * Executes all after methods from all preloaded middleware classes
-	 * @return voic
-	 */
-	private function executeAfterMiddleware($matches) {
-
-		foreach($this -> middleware as $class) {
-
-			//Execute method if middleware supports it
-			if(true === is_callable([$class, 'after'])) {
-				call_user_func_array([$class, 'after'], $matches);
-			}
+			MiddlewareContainer :: add($namespace, 'before');
+			MiddlewareContainer :: add($namespace, 'after');
 		}
 	}
 }

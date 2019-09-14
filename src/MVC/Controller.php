@@ -12,6 +12,7 @@ namespace sFire\MVC;
 use sFire\MVC\Main;
 use sFire\Template\TemplateData;
 
+
 class Controller extends Main {
 
 

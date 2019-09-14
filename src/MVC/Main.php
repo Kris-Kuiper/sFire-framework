@@ -10,11 +10,18 @@
 namespace sFire\MVC;
 
 use sFire\Routing\Router;
+use sFire\HTTP\Output;
 
 Class Main extends Service {
 
 
 	use MVCTrait;
+
+
+	/**
+	 * $output sFire\HTTP\Output
+	 */
+	private $output;
 
 
 	/**
@@ -37,6 +44,20 @@ Class Main extends Service {
 		}
 
 		return Router :: getRoute();
+	}
+
+
+	/**
+	 * Returns an Output object to send data in a fixed format to the browser 
+	 * @return sFire\HTTP\Output
+	 */
+	public function output() {
+
+		if(null === $this -> output) {
+			$this -> output = new Output();
+		}
+
+		return $this -> output;
 	}
 }
 ?>

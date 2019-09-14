@@ -10,7 +10,15 @@
 namespace sFire\MVC;
 
 use sFire\MVC\Main;
+use sFire\Routing\Router;
+use sFire\MVC\MiddlewareContainer;
 
 class Middleware extends Main {
+
+	public function next() {
+
+		$route = Router :: getRoute();
+		MiddlewareContainer :: next($route -> getMatch());
+	}
 }
 ?>
