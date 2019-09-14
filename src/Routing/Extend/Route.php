@@ -131,6 +131,51 @@ final class Route {
 
 
 	/**
+	 * Add an array with HTTP methods route listener for combining get, post, put etc. to one route
+	 * @param $methods array
+	 * @param string $url
+     * @param string $indentifier
+	 * @return sFire\Routing\Extend\Route
+	 */
+	public function methods($methods, $url, $identifier) {
+
+		if(false === is_array($methods)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($methods)), E_USER_ERROR);
+		}
+
+		foreach($methods as $index => $method) {
+
+			if(false === is_string($method)) {
+				return trigger_error(sprintf('Argument %s passed to %s() must be of the type string, "%s" given', $index, __METHOD__, gettype($method)), E_USER_ERROR);
+			}
+		}
+
+		return $this -> method($methods, $url, $identifier);
+	}
+
+
+	/**
+	 * Add middleware to a route
+	 * @return sFire\Routing\Extend\Route
+	 */
+	public function middleware() {
+
+		$middleware = func_get_args();
+
+		foreach($middleware as $index => $item) {
+
+			if(false === is_string($item)) {
+				return trigger_error(sprintf('Argument %s passed to %s() must be of the type string, "%s" given', $index, __METHOD__, gettype($item)), E_USER_ERROR);
+			}
+		}
+
+		$this -> attr['middleware'] = $middleware;
+
+		return $this;
+	}
+
+
+	/**
      * Sets the match
      * @param string $match
      * @return sFire\Routing\Extend\Route
@@ -571,6 +616,15 @@ final class Route {
 	public function getAssign() {
 		return $this -> getAttr('assign');
 	}
+
+
+	/**
+     * Returns the middleware
+     * @return null|array
+     */
+	public function getMiddleware() {
+		return $this -> getAttr('middleware');
+	}
 	
 
 	/**
@@ -671,8 +725,8 @@ final class Route {
 	 */
 	private function method($method, $url, $identifier) {
 
-		if(false === is_string($method)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the method string, "%s" given', __METHOD__, gettype($method)), E_USER_ERROR);
+		if(false === is_string($method) && false === is_array($method)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the method string or array, "%s" given', __METHOD__, gettype($method)), E_USER_ERROR);
 		}
 
 		if(false === is_string($url)) {

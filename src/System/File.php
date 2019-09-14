@@ -67,6 +67,33 @@ class File {
 				$data['height'] = $size[1];
 			}
 
+			if($headers = @exif_read_data($file)) {
+
+				$data['camera'] = [
+
+					'make' 				=> isset($headers['Make']) ? $headers['Make'] : null,
+					'model' 			=> isset($headers['Model']) ? $headers['Model'] : null,
+					'orientation' 		=> isset($headers['Orientation']) ? $headers['Orientation'] : null,
+					'xresolution' 		=> isset($headers['XResolution']) ? $headers['XResolution'] : null,
+					'yresolution' 		=> isset($headers['YResolution']) ? $headers['YResolution'] : null,
+					'resolutionunit' 	=> isset($headers['ResolutionUnit']) ? $headers['ResolutionUnit'] : null,
+					'software' 			=> isset($headers['Software']) ? $headers['Software'] : null,
+					'exposuretime' 		=> isset($headers['ExposureTime']) ? $headers['ExposureTime'] : null,
+					'fnumber' 			=> isset($headers['FNumber']) ? $headers['FNumber'] : null,
+					'ISOSpeedRatings' 	=> isset($headers['ISOSpeedRatings']) ? $headers['ISOSpeedRatings'] : null,
+					'ShutterSpeedValue' => isset($headers['ShutterSpeedValue']) ? $headers['ShutterSpeedValue'] : null,
+					'ApertureValue' 	=> isset($headers['ApertureValue']) ? $headers['ApertureValue'] : null,
+					'BrightnessValue' 	=> isset($headers['BrightnessValue']) ? $headers['BrightnessValue'] : null,
+					'ExposureBiasValue' => isset($headers['ExposureBiasValue']) ? $headers['ExposureBiasValue'] : null,
+					'MaxApertureValue' 	=> isset($headers['MaxApertureValue']) ? $headers['MaxApertureValue'] : null,
+					'MeteringMode' 		=> isset($headers['MeteringMode']) ? $headers['MeteringMode'] : null,
+					'Flash' 			=> isset($headers['Flash']) ? $headers['Flash'] : null
+				];
+
+				$data['created'] = isset($headers['DateTime']) ? $headers['DateTime'] : null;
+				$data['mime'] 	 = isset($headers['MimeType']) ? $headers['MimeType'] : null;
+			}
+
 			$data = array_merge($data, [
 
 				'accesstime' 		=> fileatime($file),

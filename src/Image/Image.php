@@ -385,12 +385,16 @@ class Image {
 	 */
 	public function resize($width, $height, $ratio = false, $interlace = false) {
 
-		if(false === ('-' . intval($width) == '-' . $width)) {
+		if(null !== $width && false === ('-' . intval($width) == '-' . $width)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($width)), E_USER_ERROR);
 		}
 
-		if(false === ('-' . intval($height) == '-' . $height)) {
+		if(null !== $height && false === ('-' . intval($height) == '-' . $height)) {
 			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($height)), E_USER_ERROR);
+		}
+
+		if(null === $width && null === $height) {
+			return trigger_error(sprintf('At least one dimension (width or height) passed to %s() must be of the type integer, "%s" AND "%s" given', __METHOD__, gettype($width), gettype($height)), E_USER_ERROR);	
 		}
 
 		if(null !== $ratio && false === is_bool($ratio)) {

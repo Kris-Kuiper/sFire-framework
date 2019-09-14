@@ -708,7 +708,14 @@ final class Router {
 
 				if(true === $found) {
 
-					if(Request :: getMethod() !== null && Request :: getMethod() !== $route -> getMethod() && $route -> getMethod() !== 'any') {
+					$current = Request :: getMethod();
+					$methods = true === is_array($route -> getMethod()) ? $route -> getMethod() : [$route -> getMethod()];
+
+					if(null === $current) {
+						continue;
+					}
+
+					if(false === in_array($current, $methods) && false === in_array('any', $methods)) {
 						continue;
 					}
 

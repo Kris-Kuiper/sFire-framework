@@ -110,6 +110,18 @@ class File extends Entity {
 
 
 	/**
+	 * @param array $camera
+	 */
+	private $camera;
+
+
+	/**
+	 * @param string $created
+	 */
+	private $created;
+
+
+	/**
      * Sets the name
      * @param string $name
      * @return File
@@ -442,6 +454,48 @@ class File extends Entity {
      */
 	public function getHeight() {
 		return $this -> height;
+	}
+
+
+	/**
+     * Sets the camera
+     * @param array $camera
+     * @return File
+     */
+	public function setCamera($camera) {
+		
+		$this -> camera = $camera;
+		return $this;
+	}
+
+	
+	/**
+     * Returns the camera
+     * @return array
+     */
+	public function getCamera() {
+		return $this -> camera;
+	}
+
+
+	/**
+     * Sets the created
+     * @param string $created
+     * @return File
+     */
+	public function setcreated($created) {
+		
+		$this -> created = $created;
+		return $this;
+	}
+
+	
+	/**
+     * Returns the created
+     * @return string
+     */
+	public function getcreated() {
+		return $this -> created;
 	}
 }
 ?>

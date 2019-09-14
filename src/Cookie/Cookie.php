@@ -88,7 +88,12 @@ final class Cookie extends Container {
 			$value 	= base64_encode(Hash :: encrypt($value, Application :: get('salt')));
 		}
 
-		setcookie($key, $value, time() + $seconds, ($path || $cookie['path']), ($domain || $cookie['domain']), ($secure || $cookie['secure']), ($httponly || $cookie['httponly']));
+		$path 		= $path ? $path : $cookie['path'];		
+		$domain 	= $domain ? $domain : $cookie['domain'];		
+		$secure 	= $secure ? $secure : $cookie['secure'];	
+		$httponly 	= $httponly ? $httponly : $cookie['httponly'];	
+
+		setcookie($key, $value, time() + $seconds, $path, $domain, $secure, $httponly);
 	}
 
 

@@ -48,7 +48,7 @@ class Mapper extends Main {
 		}
 
 		if($dbtable === null) {
-			return trigger_error('Table name can not be empty. Set the table name with the "setTable" method in the mapper', E_USER_ERROR);
+			return trigger_error('Table name can not be empty. Set the table name with the "setDBTable" method in the mapper', E_USER_ERROR);
 		}
 
 		if(false === isset($this -> dbtables[$dbtable])) {

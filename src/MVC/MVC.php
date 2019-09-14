@@ -20,6 +20,9 @@ use sFire\Application\Application;
 final class MVC {
 
 
+	private $middleware = [];
+
+
 	/**
 	 * Constructor
 	 * @param Route $route
@@ -51,12 +54,24 @@ final class MVC {
 			$route -> setModule(key(Config :: all()));
 		}
 
+		//Preload all middleware 
+		$this -> preloadMiddleware($route);
+
+		//Execute all before methods from all middleware
+		$this -> executeBeforeMiddleware($matches);
+		
+		//Load the controller
 		$namespace = $this -> loadController($route -> getModule(), $route -> getController());
 
 		if(true === class_exists($namespace)) {
 			
 			$controller = new $namespace;
-			return $this -> executeController($controller, $route, $matches);
+
+			//Execute the controller
+			$this -> executeController($controller, $route, $matches);
+
+			//Execute the after middleware
+			return $this -> executeAfterMiddleware($matches);
 		}
 
 		trigger_error(sprintf('Controller "%s" with module "%s" does not exists for "%s" as identifier in routes.php', $route -> getController(), $route -> getModule(), $route -> getIdentifier()), E_USER_ERROR);
@@ -103,6 +118,45 @@ final class MVC {
 
 
 	/**
+	 * Loads middleware by module name and middleware name
+	 * @param string $module
+	 * @param string $middelware
+	 * @return string
+	 */
+	public function loadMiddleware($module, $middelware) {
+
+		if(false === is_string($module)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($module)), E_USER_ERROR);
+		}
+
+		if(false === is_string($middelware)) {
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($middelware)), E_USER_ERROR);
+		}
+
+		$folders 	= explode('.', $middelware); //Convert dots to directory separators
+		$amount 	= count($folders) - 1;
+		$namespace	= '';
+
+		foreach($folders as $index => $folder) {
+
+			if($amount === $index) {
+				
+				$middleware = Application :: get(['prefix', 'middleware']) . $folder;
+				$namespace .= $middleware;
+
+				break;
+			}
+
+			$namespace 	.= $folder . DIRECTORY_SEPARATOR;
+		}
+
+		$middleware = str_replace(DIRECTORY_SEPARATOR, '\\', $module . DIRECTORY_SEPARATOR . Application :: get(['directory', 'middleware']) . $namespace);
+
+		return $middleware;
+	}
+
+
+	/**
 	 * Executes default controller functions
 	 * @param object $controller
 	 * @param sFire\Routing\Extend\Route $method
@@ -143,7 +197,6 @@ final class MVC {
 	}
 
 
-
 	/**
 	 * Load the module boot file if exists and readable
 	 * @param string $module
@@ -158,6 +211,66 @@ final class MVC {
 
 		if(true === is_readable($boot)) {
 			require_once($boot);
+		}
+	}
+
+
+	/**
+	 * Loads all the middleware classes and saves them for later use for a single route
+	 * @param sFire\Routing\Extend\Route $method
+	 * @return void
+	 */
+	private function preloadMiddleware($route) {
+
+		$middleware = $route -> getMiddleware();
+
+		if(null === $middleware) {
+			return;
+		}
+		
+		foreach($middleware as $class) {
+
+			$namespace = $this -> loadMiddleware($route -> getModule(), $class);
+
+			if(false === class_exists($namespace)) {
+				return trigger_error(sprintf('Middleware "%s" with module "%s" does not exists for "%s" as identifier in routes.php', $class, $route -> getModule(), $route -> getIdentifier()), E_USER_ERROR);
+			}
+
+			if(false === isset($this -> middleware[$namespace])) {
+				$this -> middleware[$namespace] = new $namespace;
+			}
+		}
+	}
+
+
+	/**
+	 * Executes all before methods from all preloaded middleware classes
+	 * @return voic
+	 */
+	private function executeBeforeMiddleware($matches) {
+
+		foreach($this -> middleware as $class) {
+
+			//Execute method if middleware supports it
+			if(true === is_callable([$class, 'before'])) {
+				call_user_func_array([$class, 'before'], $matches);
+			}
+		}
+	}
+
+
+	/**
+	 * Executes all after methods from all preloaded middleware classes
+	 * @return voic
+	 */
+	private function executeAfterMiddleware($matches) {
+
+		foreach($this -> middleware as $class) {
+
+			//Execute method if middleware supports it
+			if(true === is_callable([$class, 'after'])) {
+				call_user_func_array([$class, 'after'], $matches);
+			}
 		}
 	}
 }
