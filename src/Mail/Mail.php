@@ -668,4 +668,3 @@ Final class Mail implements MailInterface {
 		return $this -> boundary;
 	}
 }
-?>

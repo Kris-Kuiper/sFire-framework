@@ -801,4 +801,3 @@ final class Router {
 		return static :: $routes;
 	}
 }
-?>

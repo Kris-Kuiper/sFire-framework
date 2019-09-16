@@ -71,4 +71,3 @@ class Service {
 		return Config :: get(array_merge([$module], $data));
 	}
 }
-?>

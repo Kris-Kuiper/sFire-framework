@@ -86,4 +86,3 @@ class MatchElseIf {
 		return $this;
 	}
 }
-?>

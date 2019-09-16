@@ -15,10 +15,13 @@ use sFire\MVC\MiddlewareContainer;
 
 class Middleware extends Main {
 
+
+	/**
+	 * When called, the next middleware will be called. If there is none left, it will continue to load the controller for route
+	 */
 	public function next() {
 
 		$route = Router :: getRoute();
 		MiddlewareContainer :: next($route -> getMatch());
 	}
 }
-?>

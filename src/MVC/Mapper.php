@@ -20,6 +20,7 @@ class Mapper extends Main {
 
 	use NamespaceTrait;
 
+
 	/**
 	 * @var string $dbtable
 	 */
@@ -123,4 +124,3 @@ class Mapper extends Main {
 		return $this -> dbtable;
 	}
 }
-?>

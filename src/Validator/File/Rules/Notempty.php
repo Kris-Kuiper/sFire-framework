@@ -41,4 +41,3 @@ class Notempty implements RuleInterface {
 		return false;
 	}
 }
-?>

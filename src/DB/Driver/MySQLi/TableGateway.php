@@ -21,9 +21,6 @@ class TableGateway extends Main {
 	use NamespaceTrait;
 
 
-	private $data;
-
-
 	/**
 	 * @var mixed $adapter
 	 */
@@ -423,4 +420,3 @@ class TableGateway extends Main {
 	    return (count(array_filter($array, 'is_array')) > 0);
 	}
 }
-?>

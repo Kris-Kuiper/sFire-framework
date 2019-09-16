@@ -57,4 +57,3 @@ class Different implements RuleInterface {
 		return true;
 	}
 }
-?>

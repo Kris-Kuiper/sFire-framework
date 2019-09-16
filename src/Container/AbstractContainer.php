@@ -17,4 +17,3 @@ abstract class AbstractContainer {
 	 */
 	protected static $data;
 }
-?>

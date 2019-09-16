@@ -108,4 +108,3 @@ class MatchUserDefined {
 		return $this;
 	}
 }
-?>

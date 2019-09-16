@@ -37,4 +37,3 @@ trait IdAwareTrait {
         return $this -> id;
     }
 }
-?>

@@ -76,4 +76,3 @@ class Equals implements RuleInterface {
 		return true === ($this -> strict === true ? ($value === $params[0]) : ($value == $params[0]));
 	}
 }
-?>

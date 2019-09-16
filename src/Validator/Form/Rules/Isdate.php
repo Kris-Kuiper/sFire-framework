@@ -76,4 +76,3 @@ class Isdate implements RuleInterface {
 		return false;
 	}
 }
-?>

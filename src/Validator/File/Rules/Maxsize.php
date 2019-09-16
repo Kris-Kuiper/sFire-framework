@@ -55,4 +55,3 @@ class Maxsize implements RuleInterface {
 		return false;
 	}
 }
-?>

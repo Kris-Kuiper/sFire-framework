@@ -76,4 +76,3 @@ class MatchFails {
 		return $this;
 	}
 }
-?>

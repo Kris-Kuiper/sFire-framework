@@ -85,4 +85,3 @@ class MatchIf {
 		return $this;
 	}
 }
-?>

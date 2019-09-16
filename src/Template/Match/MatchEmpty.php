@@ -85,4 +85,3 @@ class MatchEmpty {
 		return $this;
 	}
 }
-?>

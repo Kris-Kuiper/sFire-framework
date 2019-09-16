@@ -18,9 +18,8 @@ use DateTime;
 
 class ErrorHandler {
 
-	const PRODUCTION  = 'production';
-	
 
+	const PRODUCTION  = 'production';
 	const DEVELOPMENT = 'development';
 
 
@@ -233,4 +232,3 @@ class ErrorHandler {
 		return $this -> logger;
 	}
 }
-?>

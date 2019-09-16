@@ -59,4 +59,3 @@ class Token {
         return (object) ['name' => $name, 'value' => $value];
     }
 }
-?>

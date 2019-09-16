@@ -65,4 +65,3 @@ class Alpha implements RuleInterface {
 		return false;
 	}
 }
-?>

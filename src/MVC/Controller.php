@@ -28,4 +28,3 @@ class Controller extends Main {
 		return $this;
 	}
 }
-?>

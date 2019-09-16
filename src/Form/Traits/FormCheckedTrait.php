@@ -14,6 +14,7 @@ use sFire\Escaper\Escape;
 
 trait FormCheckedTrait {
 
+
 	/**
      * Builds the HTML
      * @return string
@@ -45,4 +46,3 @@ trait FormCheckedTrait {
         return $html;
     }
 }
-?>

@@ -60,4 +60,3 @@ class Isboolean implements RuleInterface {
 		return true === is_bool($value);
 	}
 }
-?>

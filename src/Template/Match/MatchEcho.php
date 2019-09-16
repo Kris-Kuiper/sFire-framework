@@ -93,4 +93,3 @@ class MatchEcho {
 		return $this;
 	}
 }
-?>

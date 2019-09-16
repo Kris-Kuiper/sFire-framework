@@ -76,4 +76,3 @@ interface InterfaceDB {
 	 */
 	public function close();
 }
-?>

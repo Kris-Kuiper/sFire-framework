@@ -55,4 +55,3 @@ class Minsize implements RuleInterface {
 		return false;
 	}
 }
-?>

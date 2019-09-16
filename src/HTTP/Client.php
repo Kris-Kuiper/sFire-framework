@@ -32,49 +32,49 @@ final class Client {
 
 
 	/**
-	 * string $url
+	 * @var string $url
 	 */
 	private $url;
 
 
 	/**
-	 * string $method
+	 * @var string $method
 	 */
 	private $method;
 
 
 	/**
-	 * array $options
+	 * @var array $options
 	 */
 	private $options = [];
 
 
 	/**
-	 * array $headers
+	 * @var array $headers
 	 */
 	private $headers = [];
 
 
 	/**
-	 * array $params
+	 * @var array $params
 	 */
 	private $params = [];
 
 
 	/**
-	 * array $files
+	 * @var array $files
 	 */
 	private $files = [];
 
 
 	/**
-	 * array $cookies
+	 * @var array $cookies
 	 */
 	private $cookies = [];
 
 
 	/**
-	 * sFire\Entity\Response $response
+	 * @var sFire\Entity\Response $response
 	 */
 	private $response;
 
@@ -818,4 +818,3 @@ final class Client {
 		return $this;
 	}
 }
-?>

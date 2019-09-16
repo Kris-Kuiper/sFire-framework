@@ -18,4 +18,3 @@ class Generic {
 
     use FormInputTrait;
 }
-?>

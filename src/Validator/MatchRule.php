@@ -13,6 +13,7 @@ use sFire\Validator\Store;
 
 trait MatchRule {
 
+
 	/**
      * @var string $field
      */
@@ -216,4 +217,3 @@ trait MatchRule {
         return Store :: get($key);
     }
 }
-?>

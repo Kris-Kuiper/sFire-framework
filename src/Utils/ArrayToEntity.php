@@ -11,6 +11,7 @@ namespace sFire\Utils;
 
 class ArrayToEntity {
 	
+	
 	/**
 	 * Constructor
 	 * @param object $object
@@ -28,4 +29,3 @@ class ArrayToEntity {
 		}
 	}
 }
-?>

@@ -226,4 +226,3 @@ class Validator {
 		return $data;
 	}
 }
-?>

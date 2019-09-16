@@ -31,4 +31,3 @@ final class Files extends Container {
 		static :: add('module-config', 'config' . DIRECTORY_SEPARATOR . 'config.php');
 	}
 }
-?>

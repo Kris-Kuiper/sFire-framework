@@ -55,4 +55,3 @@ class Minheight implements RuleInterface {
 		return false;
 	}
 }
-?>

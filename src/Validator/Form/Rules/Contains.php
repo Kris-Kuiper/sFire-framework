@@ -75,4 +75,3 @@ class Contains implements RuleInterface {
 		return false;
 	}
 }
-?>

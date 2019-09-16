@@ -16,6 +16,7 @@ use sFire\Utils\StringToArray;
 
 trait FormTrait {
 
+
 	/**
      * @var array $attributes
      */
@@ -50,6 +51,7 @@ trait FormTrait {
      * @var boolean $filled
      */
     private $filled = true;
+
 
     /**
      * Contructor
@@ -190,4 +192,3 @@ trait FormTrait {
         }
     }
 }
-?>

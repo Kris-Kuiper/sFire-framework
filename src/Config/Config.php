@@ -36,4 +36,3 @@ final class Config extends Container {
 		return trigger_error(sprintf('Unsupported method %s called', __METHOD__), E_USER_ERROR);
 	}
 }
-?>

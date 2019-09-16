@@ -224,4 +224,3 @@ class ViewModel {
 		return $this -> hash;
 	}
 }
-?>

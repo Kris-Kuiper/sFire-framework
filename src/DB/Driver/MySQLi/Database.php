@@ -750,4 +750,3 @@ class Database implements InterfaceDB {
 		return $vars;
 	}
 }
-?>

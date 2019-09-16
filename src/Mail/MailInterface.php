@@ -82,4 +82,3 @@ interface MailInterface {
 	 */
 	public function from($email, $name);
 }
-?>

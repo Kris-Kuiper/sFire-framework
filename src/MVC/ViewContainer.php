@@ -102,4 +102,3 @@ class ViewContainer {
 		return static :: $variables;
 	}
 }
-?>

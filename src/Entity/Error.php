@@ -258,4 +258,3 @@ class Error extends Entity {
 		return $this -> backtrace;
 	}
 }
-?>

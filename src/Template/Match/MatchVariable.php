@@ -52,4 +52,3 @@ class MatchVariable {
 		return $this;
 	}
 }
-?>

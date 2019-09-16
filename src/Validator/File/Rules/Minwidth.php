@@ -55,4 +55,3 @@ class Minwidth implements RuleInterface {
 		return false;
 	}
 }
-?>

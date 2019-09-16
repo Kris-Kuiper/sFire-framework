@@ -80,4 +80,3 @@ class Maxwords implements RuleInterface {
 		return false;
 	}
 }
-?>

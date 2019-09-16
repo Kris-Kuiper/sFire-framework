@@ -71,4 +71,3 @@ final class Resources {
 		return true === array_key_exists($resource, $this -> resources);
 	}
 }
-?>

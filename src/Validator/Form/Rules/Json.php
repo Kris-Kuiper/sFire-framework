@@ -68,4 +68,3 @@ class Json implements RuleInterface {
 	 	return false;
 	}
 }
-?>

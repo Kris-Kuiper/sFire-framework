@@ -235,4 +235,3 @@ class Translation {
 		return $languages;
 	}
 }
-?>

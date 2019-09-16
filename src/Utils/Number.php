@@ -213,4 +213,3 @@ final class Number {
 		return $this;
 	}
 }
-?>

@@ -236,4 +236,3 @@ if(true === isset($argv)) {
 		$schedule -> task($argv[1]);
 	}
 }
-?>

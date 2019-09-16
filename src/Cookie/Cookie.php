@@ -195,4 +195,3 @@ final class Cookie extends Container {
 		return $cookies;
 	}
 }
-?>

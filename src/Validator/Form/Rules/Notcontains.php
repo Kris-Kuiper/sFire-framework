@@ -75,4 +75,3 @@ class Notcontains implements RuleInterface {
 		return false;
 	}
 }
-?>

@@ -261,4 +261,3 @@ class View {
 		return call_user_func_array($functions[$action], $params);
 	}
 }
-?>

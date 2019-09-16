@@ -11,6 +11,7 @@ namespace sFire\Hash;
 
 final class Token {
 
+
 	/**
 	 * Generate an unique id 
 	 * @param int $length
@@ -77,4 +78,3 @@ final class Token {
 		return $str;
 	}
 }
-?>

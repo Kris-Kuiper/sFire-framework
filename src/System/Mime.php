@@ -13,7 +13,12 @@ use sFire\Container\Container;
 
 class Mime extends Container {
 
+
+	/**
+	 * @var array $data
+	 */
 	protected static $data = [];
+
 
 	/**
 	 * Constructor
@@ -472,4 +477,3 @@ class Mime extends Container {
 		static :: add('zsh', 		'text/x-script.zsh');
 	}
 }
-?>

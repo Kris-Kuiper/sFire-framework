@@ -88,4 +88,3 @@ class MatchTranslation {
 		return $this;
 	}
 }
-?>

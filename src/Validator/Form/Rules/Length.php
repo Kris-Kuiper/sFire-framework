@@ -75,4 +75,3 @@ class Length implements RuleInterface {
 		return false;
 	}
 }
-?>

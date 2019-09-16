@@ -13,4 +13,3 @@ use sFire\Container\Container;
 
 class Store extends Container {
 }
-?>

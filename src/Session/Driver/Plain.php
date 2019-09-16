@@ -15,6 +15,7 @@ use sFire\Hash\Token;
 
 class Plain extends Container {
 
+
 	/**
      * @var array $data
      */
@@ -74,4 +75,3 @@ class Plain extends Container {
 		return session_id();
 	}
 }
-?>

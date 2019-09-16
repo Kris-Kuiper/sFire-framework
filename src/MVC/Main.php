@@ -19,7 +19,7 @@ Class Main extends Service {
 
 
 	/**
-	 * $output sFire\HTTP\Output
+	 * @var $output sFire\HTTP\Output
 	 */
 	private $output;
 
@@ -60,4 +60,3 @@ Class Main extends Service {
 		return $this -> output;
 	}
 }
-?>

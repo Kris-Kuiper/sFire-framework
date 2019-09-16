@@ -85,4 +85,3 @@ class MatchNotIsset {
 		return $this;
 	}
 }
-?>

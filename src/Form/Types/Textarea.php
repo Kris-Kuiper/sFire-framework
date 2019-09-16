@@ -46,4 +46,3 @@ class Textarea {
         return $html;
     }
 }
-?>

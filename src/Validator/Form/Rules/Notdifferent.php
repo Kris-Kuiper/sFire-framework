@@ -57,4 +57,3 @@ class Notdifferent implements RuleInterface {
 		return true;
 	}
 }
-?>

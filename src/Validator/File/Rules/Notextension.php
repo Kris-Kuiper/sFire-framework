@@ -51,4 +51,3 @@ class Notextension implements RuleInterface {
 		return false;
 	}
 }
-?>

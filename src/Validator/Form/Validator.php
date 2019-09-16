@@ -388,4 +388,3 @@ class Validator {
 		return $data;
 	}
 }
-?>

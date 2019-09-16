@@ -60,4 +60,3 @@ class Isarray implements RuleInterface {
 		return true === is_array($value);
 	}
 }
-?>

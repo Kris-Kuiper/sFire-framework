@@ -73,4 +73,3 @@ class After implements RuleInterface {
 		return false;
 	}
 }
-?>

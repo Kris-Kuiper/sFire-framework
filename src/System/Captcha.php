@@ -382,4 +382,3 @@ final class Captcha  {
 		}
 	}
 }
-?>

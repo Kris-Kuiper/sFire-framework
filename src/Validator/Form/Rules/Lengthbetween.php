@@ -83,4 +83,3 @@ class Lengthbetween implements RuleInterface {
 		return false;
 	}
 }
-?>

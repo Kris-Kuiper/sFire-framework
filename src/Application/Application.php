@@ -18,4 +18,3 @@ final class Application extends Container {
 	 */	
 	protected static $data = [];
 }
-?>

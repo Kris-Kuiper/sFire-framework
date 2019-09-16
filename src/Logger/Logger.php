@@ -201,4 +201,3 @@ class Logger {
 		return $this -> directory -> entity() -> getPath() . date($this -> getMode()) . $this -> getSuffix() . $this -> getExtension();
 	}
 }
-?>

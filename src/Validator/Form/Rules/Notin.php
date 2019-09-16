@@ -75,4 +75,3 @@ class Notin implements RuleInterface {
 		return false;
 	}
 }
-?>

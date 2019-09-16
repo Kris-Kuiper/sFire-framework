@@ -11,8 +11,16 @@ namespace sFire\Form;
 
 class Form {
 
+
 	const NAMESPACE_TYPES = '\\Types\\';
 
+
+	/**
+	 * Magic method for calling methods
+	 * @param mixed $type 
+	 * @param array $params 
+	 * @return mixed
+	 */
 	public function __call($type, $params) {
 
 		$params = [
@@ -59,4 +67,3 @@ class Form {
 		return __NAMESPACE__ . self :: NAMESPACE_TYPES . ucfirst(strtolower($type));
 	}
 }
-?>

@@ -11,8 +11,11 @@ namespace sFire\Handler;
 
 class NotImplementedHandler {
 
+
+	/**
+	 * Constructor
+	 */
 	public function __construct($method) {
 		return trigger_error(sprintf('Method "%s" is not implemented', $method), E_USER_ERROR);
 	}
 }
-?>

@@ -75,4 +75,3 @@ class Regex implements RuleInterface {
 		return false;
 	}
 }
-?>

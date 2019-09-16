@@ -75,4 +75,3 @@ class In implements RuleInterface {
 		return false;
 	}
 }
-?>

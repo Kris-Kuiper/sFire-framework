@@ -75,4 +75,3 @@ class Max implements RuleInterface {
 		return false;
 	}
 }
-?>

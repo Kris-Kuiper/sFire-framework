@@ -51,4 +51,3 @@ class Extension implements RuleInterface {
 		return false;
 	}
 }
-?>

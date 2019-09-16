@@ -16,7 +16,9 @@ use sFire\Template\TemplateData;
 
 class Template {
 
+
 	const NAMESPACE_MATCH = 'sFire\\Template\\Match\\';
+
 
 	/**
 	 * @var sFire\MVC\ViewMode $viewmodel 
@@ -233,4 +235,3 @@ class Template {
 		return $this;
 	}
 }
-?>

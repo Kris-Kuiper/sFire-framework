@@ -63,4 +63,3 @@ class Dimensions implements RuleInterface {
 		return false;
 	}
 }
-?>

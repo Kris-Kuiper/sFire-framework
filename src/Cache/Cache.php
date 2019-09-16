@@ -15,13 +15,13 @@ class Cache implements CacheInterface {
 
 
 	/**
-     * @param string $driver
+     * @var string $driver
      */
     private $driver;
 
 
     /**
-     * @param mixed $driverInstance
+     * @var mixed $driverInstance
      */
     private $driverInstance;
 
@@ -147,4 +147,3 @@ class Cache implements CacheInterface {
         return $this -> driverInstance;
     }
 }
-?>

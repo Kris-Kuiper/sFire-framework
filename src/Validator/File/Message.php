@@ -38,4 +38,3 @@ class Message {
 		return __NAMESPACE__ . self :: NAMESPACE_RULES . ucfirst(strtolower($rule));
 	}
 }
-?>

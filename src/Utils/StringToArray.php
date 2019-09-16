@@ -11,6 +11,7 @@ namespace sFire\Utils;
 
 class StringToArray {
 
+
 	/**
 	 * Get value from array string
 	 * @param mixed $key
@@ -61,4 +62,3 @@ class StringToArray {
 		return $default;
 	}
 }
-?>

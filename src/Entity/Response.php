@@ -202,4 +202,3 @@ final class Response extends Entity {
 		return $this -> response;
 	}
 }
-?>

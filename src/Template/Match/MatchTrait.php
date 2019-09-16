@@ -105,4 +105,3 @@ trait MatchTrait {
         $this -> inline = $inline;
     }
 }
-?>

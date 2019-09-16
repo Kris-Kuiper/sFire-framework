@@ -467,4 +467,3 @@ trait Validator {
 		return $this -> executed;
 	}
 }
-?>

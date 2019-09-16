@@ -36,6 +36,12 @@ class ResultSet extends \ArrayIterator {
 
 
 	/**
+	 * @var array $filter
+	 */
+	private $filter = [];
+
+
+	/**
 	 * Constructor
 	 * @param array $dataset
 	 * @param mixed $type
@@ -86,6 +92,13 @@ class ResultSet extends \ArrayIterator {
 
 		$current = parent :: current();
 
+		//Filter 
+		if(count($this -> filter) > 0) {
+
+			$excluded = $this -> filter;
+			$current = array_filter($current, function($key) use ($excluded) { return false === in_array($key, $excluded); }, ARRAY_FILTER_USE_KEY);
+		}
+
 		if(null !== $current) {
 
 			if(false === is_string($current) && false === is_numeric($current) && true === $this -> is_multidimensional($current)) {
@@ -122,6 +135,22 @@ class ResultSet extends \ArrayIterator {
 					return $entity;
 			}
 		}
+	}
+
+
+	/**
+	 * Apply an column filter to the current array position. This will remove all columns which are included in the filter array
+	 * @param array $filter
+	 * @return $this
+	 */
+	public function filter($filter) {
+
+		if(false === is_array($filter)) {
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($filter)), E_USER_ERROR);
+		}
+
+		$this -> filter = $filter;
+		return $this;
 	}
 
 
@@ -189,4 +218,3 @@ class ResultSet extends \ArrayIterator {
 	    return (count(array_filter($array, 'is_array')) > 0);
 	}
 }
-?>

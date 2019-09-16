@@ -51,7 +51,7 @@ final class MVC {
 		if('' === $route -> getModule()) {
 			$route -> setModule(key(Config :: all()));
 		}
-
+		
 		//Intialise Middleware Container
 		MiddlewareContainer :: modus('before');
 		MiddlewareContainer :: matches($matches);
@@ -254,4 +254,3 @@ final class MVC {
 		}
 	}
 }
-?>

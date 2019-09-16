@@ -75,4 +75,3 @@ class Min implements RuleInterface {
 		return false;
 	}
 }
-?>

@@ -80,4 +80,3 @@ class Minwords implements RuleInterface {
 		return false;
 	}
 }
-?>

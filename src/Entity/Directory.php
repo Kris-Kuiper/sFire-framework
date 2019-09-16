@@ -284,4 +284,3 @@ class Directory extends Entity {
 		return $this -> writable;
 	}
 }
-?>

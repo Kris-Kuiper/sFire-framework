@@ -67,4 +67,3 @@ trait MVCTrait {
 		return true === Request :: isPost() && null === $helper -> execute($fieldname, null, Message :: getErrors(true));
 	}
 }
-?>

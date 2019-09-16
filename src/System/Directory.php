@@ -414,4 +414,3 @@ class Directory {
 	    closedir($directory); 
 	} 
 }
-?>

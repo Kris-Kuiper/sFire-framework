@@ -84,4 +84,3 @@ class MatchEscape {
 		return $this;
 	}
 }
-?>

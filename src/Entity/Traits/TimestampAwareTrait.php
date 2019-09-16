@@ -324,4 +324,3 @@ trait TimestampAwareTrait {
         return $this -> completed_on;
     }
 }
-?>

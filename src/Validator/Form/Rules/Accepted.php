@@ -67,4 +67,3 @@ class Accepted implements RuleInterface {
 		return false;
 	}
 }
-?>

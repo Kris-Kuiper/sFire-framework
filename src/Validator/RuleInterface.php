@@ -11,6 +11,7 @@ namespace sFire\Validator;
 
 interface RuleInterface {
 
+
 	/**
 	 * Constructor
 	 */
@@ -65,4 +66,3 @@ interface RuleInterface {
 	 */
 	public function isValid();
 }
-?>

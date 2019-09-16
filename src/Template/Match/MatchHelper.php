@@ -75,4 +75,3 @@ class MatchHelper {
 		return $this;
 	}
 }
-?>

@@ -63,4 +63,3 @@ class Size implements RuleInterface {
 		return false;
 	}
 }
-?>

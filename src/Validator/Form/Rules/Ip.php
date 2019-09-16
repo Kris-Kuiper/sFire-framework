@@ -69,4 +69,3 @@ class Ip {
 		return true === $ipv4 -> isValid() || $ipv6 -> isValid();
 	}
 }
-?>

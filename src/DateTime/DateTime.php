@@ -44,4 +44,3 @@ class DateTime extends \DateTime {
 		return $this -> loadFormat();
 	}
 }
-?>

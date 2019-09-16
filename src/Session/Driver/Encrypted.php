@@ -20,11 +20,7 @@ class Encrypted extends Container {
 
 
     const METHOD = 'AES-256-CBC';
-
-
     const ENCODING  = '8bit';
-
-    
     const ALGORITHM = 'SHA256';
 
 
@@ -119,4 +115,3 @@ class Encrypted extends Container {
         return $key;
     }
 }
-?>

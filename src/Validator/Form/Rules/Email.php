@@ -65,4 +65,3 @@ class Email implements RuleInterface {
 		return false;
 	}
 }
-?>

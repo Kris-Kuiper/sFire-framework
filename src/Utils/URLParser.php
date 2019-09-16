@@ -3,6 +3,7 @@ namespace sFire\Utils;
 
 class URLParser {
 
+
 	const UNTIL_SCHEME 		= 'scheme';
 	const UNTIL_HOST 		= 'host';
 	const UNTIL_USER 		= 'user';
@@ -203,4 +204,3 @@ class URLParser {
 		return $this -> url;
 	}
 }
-?>

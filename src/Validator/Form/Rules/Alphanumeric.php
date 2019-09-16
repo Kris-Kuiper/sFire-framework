@@ -65,4 +65,3 @@ class Alphanumeric implements RuleInterface {
 		return false;
 	}
 }
-?>

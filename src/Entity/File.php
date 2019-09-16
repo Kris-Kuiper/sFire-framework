@@ -13,6 +13,7 @@ use sFire\Entity\Entity;
 
 class File extends Entity {
 	
+	
 	/**
 	 * @param string $name
 	 */
@@ -20,103 +21,103 @@ class File extends Entity {
 
 
 	/**
-	 * @param string $basename
+	 * @var string $basename
 	 */
 	private $basename;
 
 
 	/**
-	 * @param string $basepath
+	 * @var string $basepath
 	 */
 	private $basepath;
 
 
 	/**
-	 * @param string $extension
+	 * @var string $extension
 	 */
 	private $extension;
 
 
 	/**
-	 * @param boolean $exists
+	 * @var boolean $exists
 	 */
 	private $exists;
 
 
 	/**
-	 * @param int $filesize
+	 * @var int $filesize
 	 */
 	private $filesize;
 
 
 	/**
-	 * @param int $accesstime
+	 * @var int $accesstime
 	 */
 	private $accesstime;
 
 
 	/**
-	 * @param string $path
+	 * @var string $path
 	 */
 	private $path;
 
 
 	/**
-	 * @param string $group
+	 * @var string $group
 	 */
 	private $group;
 
 
 	/**
-	 * @param int $modificationtime
+	 * @var int $modificationtime
 	 */
 	private $modificationtime;
 
 
 	/**
-	 * @param boolean $readable
+	 * @var boolean $readable
 	 */
 	private $readable;
 
 
 	/**
-	 * @param string $mime
+	 * @var string $mime
 	 */
 	private $mime;
 
 
 	/**
-	 * @param string $owner
+	 * @var string $owner
 	 */
 	private $owner;
 
 
 	/**
-	 * @param boolean $writable
+	 * @var boolean $writable
 	 */
 	private $writable;
 
 
 	/**
-	 * @param int $width
+	 * @var int $width
 	 */
 	private $width;
 
 
 	/**
-	 * @param int $height
+	 * @var int $height
 	 */
 	private $height;
 
 
 	/**
-	 * @param array $camera
+	 * @var array $camera
 	 */
 	private $camera;
 
 
 	/**
-	 * @param string $created
+	 * @var string $created
 	 */
 	private $created;
 
@@ -498,4 +499,3 @@ class File extends Entity {
 		return $this -> created;
 	}
 }
-?>

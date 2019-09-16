@@ -65,4 +65,3 @@ class Ipv4 implements RuleInterface {
 		return false;
 	}
 }
-?>

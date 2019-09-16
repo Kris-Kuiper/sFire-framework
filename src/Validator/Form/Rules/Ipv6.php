@@ -65,4 +65,3 @@ class Ipv6 implements RuleInterface {
 		return false;
 	}
 }
-?>

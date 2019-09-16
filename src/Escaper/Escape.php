@@ -378,4 +378,3 @@ class Escape {
         return ($string === '' || preg_match('/^./su', $string));
     }
 }
-?>

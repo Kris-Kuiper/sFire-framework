@@ -273,4 +273,3 @@ trait Message {
 		return true === class_exists($class);
 	}
 }
-?>

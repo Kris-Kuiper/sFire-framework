@@ -16,7 +16,7 @@ class GD extends AbstractDriver {
 
 
 	/**
-     * @param resource $image
+     * @var resource $image
      */
 	private $image;
 
@@ -447,4 +447,3 @@ class GD extends AbstractDriver {
 		return call_user_func_array('imagefilter', array_merge([$this -> image], $params));
 	}
 }
-?>

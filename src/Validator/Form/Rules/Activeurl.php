@@ -68,4 +68,3 @@ class Activeurl implements RuleInterface {
  		return false;
 	}
 }
-?>

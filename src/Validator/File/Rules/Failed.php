@@ -52,4 +52,3 @@ class Failed implements RuleInterface {
 		return false;
 	}
 }
-?>

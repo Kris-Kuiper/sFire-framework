@@ -75,4 +75,3 @@ class Lengthmax implements RuleInterface {
 		return false;
 	}
 }
-?>

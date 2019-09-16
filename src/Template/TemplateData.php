@@ -83,4 +83,3 @@ class TemplateData {
 		return static :: $templateFunctions;
 	}
 }
-?>

@@ -13,37 +13,37 @@ final class MiddlewareContainer {
 
 
 	/**
-	 * array $before
+	 * @var array $before
 	 */
 	private static $before = [];
 
 
 	/**
-	 * array $after
+	 * @var array $after
 	 */
 	private static $after = [];
 
 
 	/**
-	 * string $modus
+	 * @var string $modus
 	 */
 	private static $modus = 'before';
 
 
 	/**
-	 * array $namespaces
+	 * @var array $namespaces
 	 */
 	private static $namespaces = [];
 
 
 	/**
-	 * array $matches
+	 * @var array $matches
 	 */
 	private static $matches = [];
 	
 
 	/**
-	 * array $counter
+	 * @var array $counter
 	 */
 	private static $counter = [
 		
@@ -100,6 +100,10 @@ final class MiddlewareContainer {
 	}
 
 
+	/**
+	 * Check if there is more middleware to execute
+	 * @return boolean
+	 */
 	public static function isEmpty() {
 
 		switch(static :: $modus) {
@@ -165,4 +169,3 @@ final class MiddlewareContainer {
 		static :: $modus = $modus;
 	}
 }
-?>

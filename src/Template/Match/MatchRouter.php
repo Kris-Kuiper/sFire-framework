@@ -88,4 +88,3 @@ class MatchRouter {
 		return $this;
 	}
 }
-?>

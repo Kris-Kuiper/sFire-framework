@@ -15,49 +15,49 @@ class Image {
     
 
 	/**
-	 * @param int 
+	 * @var int 
 	 */
 	const FLIP_HORIZONTAL = 1;
 	
 
 	/**
-	 * @param int 
+	 * @var int 
 	 */
 	const FLIP_VERTICAL = 2;
 
 
 	/**
-	 * @param int 
+	 * @var int 
 	 */
 	const FLIP_BOTH = 3;
 
 
     /**
-     * @param string $driver
+     * @var string $driver
      */
     private $driver;
 
 
     /**
-     * @param mixed $driverInstance
+     * @var mixed $driverInstance
      */
     private $driverInstance;
 
 
     /**
-     * @param resource $image
+     * @var resource $image
      */
     private $image;
 
 
     /**
-     * @param string $extension
+     * @var string $extension
      */
     private $extension;
 
 
     /**
-     * @param array $commands
+     * @var array $commands
      */
     private $commands = [];
 
@@ -491,4 +491,3 @@ class Image {
 		return $quality;
 	}
 }
-?>

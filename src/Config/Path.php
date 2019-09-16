@@ -46,4 +46,3 @@ final class Path extends Container {
 		static :: add('log-schedule', 		static :: get('log') . 		'schedule' . 	DIRECTORY_SEPARATOR);
 	}
 }
-?>

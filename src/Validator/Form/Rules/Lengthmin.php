@@ -75,4 +75,3 @@ class Lengthmin implements RuleInterface {
 		return false;
 	}
 }
-?>

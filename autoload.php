@@ -196,4 +196,3 @@ class Autoloader {
 }
 
 return Autoloader :: Instance();
-?>

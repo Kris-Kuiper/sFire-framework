@@ -55,4 +55,3 @@ class Maxwidth implements RuleInterface {
 		return false;
 	}
 }
-?>

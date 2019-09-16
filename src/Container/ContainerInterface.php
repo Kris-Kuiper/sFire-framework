@@ -73,4 +73,3 @@ interface ContainerInterface {
 	 */
 	public static function all();
 }
-?>

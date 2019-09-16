@@ -46,4 +46,3 @@ class MatchEndIf {
 		return $this;
 	}
 }
-?>

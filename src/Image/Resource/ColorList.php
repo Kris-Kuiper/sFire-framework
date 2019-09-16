@@ -1662,4 +1662,3 @@ class ColorList extends Container {
 		]);
 	}
 }
-?>

@@ -240,4 +240,3 @@ final class ACL {
 		return $this;
 	}
 }
-?>

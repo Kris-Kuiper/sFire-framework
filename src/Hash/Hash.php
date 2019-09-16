@@ -20,4 +20,3 @@ final class Hash {
 
 	use HashTrait;
 }
-?>

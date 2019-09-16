@@ -167,4 +167,3 @@ final class APCu implements CacheInterface {
 		return apcu_exists($key);
 	}
 }
-?>

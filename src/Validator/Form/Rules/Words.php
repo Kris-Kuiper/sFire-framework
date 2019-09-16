@@ -82,4 +82,3 @@ class Words implements RuleInterface {
 		return false;
 	}
 }
-?>

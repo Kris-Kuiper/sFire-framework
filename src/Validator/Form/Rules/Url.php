@@ -83,4 +83,3 @@ class Url implements RuleInterface {
  		return false;
 	}
 }
-?>

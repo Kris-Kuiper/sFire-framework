@@ -73,4 +73,3 @@ class Before implements RuleInterface {
 		return false;
 	}
 }
-?>

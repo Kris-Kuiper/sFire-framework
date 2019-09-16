@@ -60,4 +60,3 @@ class Isstring implements RuleInterface {
 		return true === is_string($value) || true === is_numeric($value);
 	}
 }
-?>

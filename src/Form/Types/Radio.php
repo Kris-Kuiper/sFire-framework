@@ -18,4 +18,3 @@ class Radio {
 
     use FormCheckedTrait;
 }
-?>

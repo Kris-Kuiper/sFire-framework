@@ -149,4 +149,3 @@ class Selectrange {
         return $html;
     }
 }
-?>

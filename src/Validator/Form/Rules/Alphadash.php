@@ -65,4 +65,3 @@ class Alphadash implements RuleInterface {
 		return false;
 	}
 }
-?>

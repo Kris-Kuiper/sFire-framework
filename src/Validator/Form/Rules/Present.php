@@ -60,4 +60,3 @@ class Present implements RuleInterface {
 		return null !== $value;
 	}
 }
-?>

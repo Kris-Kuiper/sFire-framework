@@ -81,4 +81,3 @@ class Isint implements RuleInterface {
 		return false;
 	}
 }
-?>

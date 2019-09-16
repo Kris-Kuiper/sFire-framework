@@ -13,4 +13,3 @@ use sFire\Container\Container;
 
 class ServiceContainer extends Container {
 }
-?>

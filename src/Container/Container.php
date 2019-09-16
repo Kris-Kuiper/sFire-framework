@@ -177,4 +177,3 @@ class Container extends AbstractContainer implements ContainerInterface {
 		return static :: $data;
 	}
 }
-?>

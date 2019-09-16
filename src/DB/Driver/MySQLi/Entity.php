@@ -617,4 +617,3 @@ class Entity extends Service {
 		$this -> columns[$method] = [$column => $value];
 	}
 }
-?>

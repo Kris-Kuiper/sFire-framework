@@ -15,13 +15,13 @@ class Session {
 
 
 	/**
-     * @param string $driver
+     * @var string $driver
      */
     private $driver;
 
 
     /**
-     * @param mixed $driverInstance
+     * @var mixed $driverInstance
      */
     private $driverInstance;
 
@@ -155,4 +155,3 @@ class Session {
         return $this -> driverInstance;
     }
 }
-?>

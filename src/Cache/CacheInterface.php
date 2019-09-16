@@ -61,4 +61,3 @@ interface CacheInterface {
 	 */
 	public function exists($key);
 }
-?>

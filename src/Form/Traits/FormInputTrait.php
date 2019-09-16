@@ -13,6 +13,7 @@ use sFire\Escaper\Escape;
 
 trait FormInputTrait {
 
+
 	/**
      * Builds the HTML
      * @return string
@@ -32,4 +33,3 @@ trait FormInputTrait {
         return $html;
     }
 }
-?>

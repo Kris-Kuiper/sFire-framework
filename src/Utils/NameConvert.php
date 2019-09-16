@@ -11,6 +11,7 @@ namespace sFire\Utils;
 
 class NameConvert {
 
+
 	/**
 	 * Converts string underscores to camelCase
 	 * @param string $string
@@ -51,4 +52,3 @@ class NameConvert {
 		return ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '_$0', $string)), '_');
 	}
 }
-?>

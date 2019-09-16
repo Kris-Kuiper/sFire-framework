@@ -65,4 +65,3 @@ class Isnumeric implements RuleInterface {
 		return true === is_numeric($value);
 	}
 }
-?>

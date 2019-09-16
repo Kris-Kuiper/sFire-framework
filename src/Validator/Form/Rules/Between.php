@@ -83,4 +83,3 @@ class Between implements RuleInterface {
 		return false;
 	}
 }
-?>

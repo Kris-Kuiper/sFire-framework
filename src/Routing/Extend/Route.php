@@ -169,7 +169,14 @@ final class Route {
 			}
 		}
 
-		$this -> attr['middleware'] = $middleware;
+		$group = Router :: getGroup();
+
+		if(true === isset($group['middleware'])) {
+			$this -> attr['middleware'] = $this -> arrayRecursiveMerge($middleware, $group['middleware']);
+		}
+		else {
+			$this -> attr['middleware'] = $middleware;
+		}
 
 		return $this;
 	}
@@ -237,10 +244,6 @@ final class Route {
 
 		if(false === is_string($key) && false === is_array($key)) {
 			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string or array, "%s" given', __METHOD__, gettype($key)), E_USER_ERROR);
-		}
-
-		if(null !== $value && false === is_string($value)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($value)), E_USER_ERROR);
 		}
 
 		if(false === is_bool($merge)) {
@@ -773,4 +776,3 @@ final class Route {
 		return $array1;
 	}
 }
-?>

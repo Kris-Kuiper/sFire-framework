@@ -85,4 +85,3 @@ class MatchForm {
 		return $this;
 	}
 }
-?>
