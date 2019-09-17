@@ -74,7 +74,7 @@ class Forward {
 	public function params($params) {
 
 		if(false === is_array($params)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($data)), E_USER_ERROR);
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($params)), E_USER_ERROR);
 		}
 
 		$this -> params = $params;

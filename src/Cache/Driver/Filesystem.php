@@ -24,8 +24,7 @@ final class Filesystem implements CacheInterface {
 
 
 	/**
-	 * Construtor
-	 * @return sFire\Cache\Filesystem
+	 * Constructor
 	 */
 	public function __construct() {
 

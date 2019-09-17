@@ -138,7 +138,7 @@ class File {
 			return trigger_error(sprintf('Directory "%s" passed to %s() is not writable', $directory, __METHOD__), E_USER_ERROR);
 		}
 
-		//Add directory seperator to directory
+		//Add directory separator to directory
 		$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
 		if(false !== $this -> file -> getExists()) {
@@ -235,7 +235,7 @@ class File {
 
 		if(false !== $this -> file -> getExists()) {
 
-			//Add directory seperator to directory
+			//Add directory separator to directory
 			$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
 			copy($this -> file -> getBasepath(), $directory . $this -> file -> getBasename());

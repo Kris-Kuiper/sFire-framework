@@ -54,15 +54,17 @@ class OTP extends AbstractOTP {
     protected function generateOTP($input) {
 
         $hash = hash_hmac($this -> algorithm, $this -> intToBytestring($input), $this -> byteSecret());
+        $hmac = [];
 
         foreach(str_split($hash, 2) as $hex) {
             $hmac[] = hexdec($hex);
         }
 
-        $offset = $hmac[19] & 0xf;
-        $code   = ($hmac[$offset+0] & 0x7F) << 24 | ($hmac[$offset + 1] & 0xFF) << 16 | ($hmac[$offset + 2] & 0xFF) << 8 | ($hmac[$offset + 3] & 0xFF);
+        $offset = $hmac[count($hmac) - 1] & 0xF;
+        $code   = ($hmac[$offset + 0] & 0x7F) << 24 | ($hmac[$offset + 1] & 0xFF) << 16 | ($hmac[$offset + 2] & 0xFF) << 8 | ($hmac[$offset + 3] & 0xFF);
+        $otp    = $code % pow(10, $this -> digits);
 
-        return $code % pow(10, $this -> digits);
+        return str_pad((string) $otp, $this -> digits, '0', STR_PAD_LEFT);
     }
 
 

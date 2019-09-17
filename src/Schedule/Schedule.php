@@ -124,7 +124,7 @@ class Schedule {
 
 		//Check if schedule has start method
 		if(false === is_callable([$class, 'start'])) {
-			return trigger_error(sprintf('Missing methode start in Schedule "%s" class', $classname));
+			return trigger_error(sprintf('Missing method start in Schedule "%s" class', $classname));
 		}
 
 		//If the current schedule is enabled
@@ -136,7 +136,7 @@ class Schedule {
 
 				ob_start();
 
-				//Capture return ouput 
+				//Capture return output
 				$data 						= [];
 				$data[$classname]['start']  = date('Y-m-d H:i:s');
 				$data[$classname]['return'] = (string) $class -> start();

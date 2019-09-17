@@ -124,7 +124,7 @@ class ResultSet extends \ArrayIterator {
 				default : 
 
 					if(false === class_exists($this -> entity)) {
-						return trigger_error(sprintf('"%s" is not a valid type or Entity class file in %s', $type, __METHOD__), E_USER_ERROR);
+						return trigger_error(sprintf('"%s" is not a valid type or Entity class file in %s', $this -> entity, __METHOD__), E_USER_ERROR);
 					}
 
 					$entity = new $this -> entity();

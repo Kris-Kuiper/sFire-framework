@@ -190,7 +190,7 @@ trait Validator {
 			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($name)), E_USER_ERROR);
 		}
 
-		$directories 	= explode('.', $classname); //Convert dots to directory seperators
+		$directories 	= explode('.', $classname); //Convert dots to directory separators
 		$amount 		= count($directories) - 1;
 		$namespace 		= Router :: getRoute() -> getModule() . '\\' . str_replace(DIRECTORY_SEPARATOR, '\\', Application :: get(['directory', 'validator']));
 
@@ -390,14 +390,14 @@ trait Validator {
 	 * @param string $field
 	 * @param array $parameters
 	 */
-	private function addRule($rule, $field, $parameters, $closue = null, $message = null) {
+	private function addRule($rule, $field, $parameters, $closure = null, $message = null) {
 
 		$this -> rules[] = (object) [
 
 			'rule' 			=> $rule, 
 			'field' 		=> $field, 
 			'parameters'	=> $parameters,
-			'closure'		=> $closue,
+			'closure'		=> $closure,
 			'prefix' 		=> $this -> getPrefix(),
 			'message'		=> $message,
 			'required' 		=> true

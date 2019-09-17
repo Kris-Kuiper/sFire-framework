@@ -530,7 +530,7 @@ Final class Mail implements MailInterface {
 		$headers = [];
 		$files 	 = true === isset($this -> headers['files']) ? $this -> headers['files'] : [];
 
-		//Prepair emailaddresses
+		//Prepare email addresses
 		foreach(['BCC', 'CC', 'Reply-To', 'From'] as $type) {
 
 			if(true === isset($this -> headers[strtolower($type)])) {

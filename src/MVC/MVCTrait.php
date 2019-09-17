@@ -25,7 +25,7 @@ trait MVCTrait {
 	 */
 	protected function helper($classname) {
 
-		$directories 	= explode('.', $classname); //Convert dots to directory seperators
+		$directories 	= explode('.', $classname); //Convert dots to directory separators
 		$amount 		= count($directories) - 1;
 		$namespace 		= Router :: getRoute() -> getModule() . '\\' . str_replace(DIRECTORY_SEPARATOR, '\\', Application :: get(['directory', 'helper']));
 

@@ -169,7 +169,7 @@ class Validator {
 
 
 	/**
-	 * Returns the instance for custom messsages
+	 * Returns the instance for custom messages
 	 * @return \sFire\Validator\Message
 	 */
 	private function getMessageInstance() {

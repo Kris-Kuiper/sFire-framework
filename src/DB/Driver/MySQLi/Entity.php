@@ -504,7 +504,7 @@ class Entity extends Service {
 
 
 	/**
-	 * Will be triggerd before saving entity to database
+	 * Will be triggered before saving entity to database
 	 * @return $this
 	 */
 	protected function beforeSave() {
@@ -513,7 +513,7 @@ class Entity extends Service {
 
 
 	/**
-	 * Will be triggerd after saving entity to database
+	 * Will be triggered after saving entity to database
 	 * @return $this
 	 */
 	protected function afterSave() {
@@ -522,7 +522,7 @@ class Entity extends Service {
 
 
 	/**
-	 * Will be triggerd before deleting entity from database
+	 * Will be triggered before deleting entity from database
 	 * @return $this
 	 */
 	protected function beforeDelete() {
@@ -531,7 +531,7 @@ class Entity extends Service {
 
 
 	/**
-	 * Will be triggerd after deleting entity from database
+	 * Will be triggered after deleting entity from database
 	 * @return $this
 	 */
 	protected function afterDelete() {
@@ -540,7 +540,7 @@ class Entity extends Service {
 
 
 	/**
-	 * Will be triggerd before the entity is loaded
+	 * Will be triggered before the entity is loaded
 	 * @return $this
 	 */
 	protected function beforeLoad() {
@@ -549,7 +549,7 @@ class Entity extends Service {
 
 
 	/**
-	 * Will be triggerd after the entity is loaded
+	 * Will be triggered after the entity is loaded
 	 * @return $this
 	 */
 	protected function afterLoad() {
@@ -584,7 +584,7 @@ class Entity extends Service {
 
 
 	/**
-	 * Tries covnert values to JSON strings. Otherwise, returns the given value
+	 * Tries converting values to JSON strings. Otherwise, returns the given value
 	 * @param string $value
 	 * @return mixed
 	 */

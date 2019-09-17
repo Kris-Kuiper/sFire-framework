@@ -161,7 +161,7 @@ final class ACL {
 
 
 	/**
-	 * Returns all the resourses in array
+	 * Returns all the resources in array
 	 * @param string|null $match
 	 * @return array
 	 */

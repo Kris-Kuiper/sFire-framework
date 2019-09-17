@@ -221,6 +221,50 @@ class OTP {
 
 
     /**
+     * Create random token that is compatible with a OTP secret key
+     * @param int $length
+     * @param boolean $numbers
+     * @param boolean $letters
+     * @param boolean $capitals
+     * @return string
+     */
+    public static function generateSecret($length = 16, $numbers = true, $letters = true, $capitals = true) {
+        
+        if(false === ('-' . intval($length) == '-' . $length)) {
+            return trigger_error(sprintf('Argument 1 passed to %s() must be of the type integer, "%s" given', __METHOD__, gettype($length)), E_USER_ERROR);
+        }
+
+        $types = ['numbers', 'letters', 'capitals'];
+
+        for($i = 0; $i < count($types); $i++) {
+
+            if(null !== ${$types[$i]} && false === is_bool(${$types[$i]})) {
+                return trigger_error(sprintf('Argument %s passed to %s() must be of the type boolean, "%s" given', ($i + 2), __METHOD__, gettype(${$types[$i]})), E_USER_ERROR);
+            }
+        }
+
+        $array           = [];
+        $caseinsensitive = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        $casesensitive   = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        $numbers_arr     = [2, 3, 4, 5, 6, 7];
+        $key             = '';
+
+        $numbers  && ($array = array_merge($array, $numbers_arr));
+        $letters  && ($array = array_merge($array, $caseinsensitive));
+        $capitals && ($array = array_merge($array, $casesensitive));
+
+        if(count($array) > 0) {
+
+            for($i = 0; $i < $length; $i++) {
+                $key .= $array[array_rand($array, 1)];
+            }
+        }
+
+        return $key;
+    }
+
+
+    /**
      * Check if OTP driver exists and returns the driver
      * @return mixed
      */

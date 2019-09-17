@@ -54,7 +54,7 @@ trait FormTrait {
 
 
     /**
-     * Contructor
+     * Constructor
      */
     public function __construct($type, $name = null, $value = null) {
 
@@ -133,7 +133,7 @@ trait FormTrait {
 
 
     /**
-     * Set if input should be automaticly filled or not
+     * Set if input should be automatically filled or not
      * @param boolean $filled
      * @return sFire\Form\Traits\FormTrait
      */

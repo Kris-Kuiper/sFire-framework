@@ -16,8 +16,7 @@ final class APCu implements CacheInterface {
 	
 
 	/**
-	 * Construtor
-	 * @return sFire\Cache\APCu
+	 * Constructor
 	 */
 	public function __construct() {
 

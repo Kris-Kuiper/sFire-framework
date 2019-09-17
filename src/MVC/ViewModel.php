@@ -45,7 +45,7 @@ class ViewModel {
 
 
 	/**
-	 * Contructor, generates unique identifier for this class
+	 * Constructor, generates unique identifier for this class
 	 * @param string $file
 	 * @param boolean $output
 	 */

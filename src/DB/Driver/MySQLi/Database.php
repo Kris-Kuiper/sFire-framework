@@ -227,7 +227,7 @@ class Database implements InterfaceDB {
 	public function fetch($type = null) {
 
 		if(null !== $type && false === is_string($type)) {
-			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($query)), E_USER_ERROR);
+			return trigger_error(sprintf('Argument 1 passed to %s() must be of the type string, "%s" given', __METHOD__, gettype($type)), E_USER_ERROR);
 		}
 
 		$results = new ResultSet([], $type);
@@ -341,7 +341,7 @@ class Database implements InterfaceDB {
 			$this -> connect();
 		}
 
-		//Escape paramaters
+		//Escape parameters
 		$query = $this -> escapeSql($query, $params);
 
 		if($this -> connection -> multi_query($query)) {
@@ -370,7 +370,7 @@ class Database implements InterfaceDB {
 
 
 	/**
-	 * Execute all statements and returns boolean on succes/failure
+	 * Execute all statements and returns boolean on success/failure
 	 * @return boolean
 	 */
 	public function execute() {
@@ -537,7 +537,7 @@ class Database implements InterfaceDB {
 		}
 
 		if(false === is_array($params)) {
-			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($data)), E_USER_ERROR);
+			return trigger_error(sprintf('Argument 2 passed to %s() must be of the type array, "%s" given', __METHOD__, gettype($params)), E_USER_ERROR);
 		}
 
 		//Check the type of param binding ("?" = all keys are numeric or ":" = all keys are strings)
@@ -639,7 +639,7 @@ class Database implements InterfaceDB {
 		if(true !== $stmt -> execute()) {
 
 			if($this -> getLastErrno() > 0) {
-				return trigger_error(sprintf('A database error occured with error number "%s" and message: "%s"', $this -> getLastErrno(), $this -> getLastError()), E_USER_ERROR);
+				return trigger_error(sprintf('A database error occurred with error number "%s" and message: "%s"', $this -> getLastErrno(), $this -> getLastError()), E_USER_ERROR);
 			}
 
 			return false;
